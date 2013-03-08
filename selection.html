@@ -89,12 +89,12 @@ function card(type, input) {
 	   				syn2 = result.indexOf('====Antonyms====');
 	   				synonyms = result.substr(syn1, syn2 - syn1);
 	   				
-	   				readData = '<b>Synonyms: </b>' + synonyms;
+	   				readData = '<i><font color="#aaa">Wiktionary</font></i><br><b>Synonyms: </b>' + synonyms;
 	   				
-	   				//Find a way to parse
+	   				/*Find a way to parse
 	   					http://en.wiktionary.org/w/api.php?action=query&titles=aware&prop=revisions&rvprop=content
 	   					http://en.wiktionary.org/wiki/aware
-
+					*/
 
 					/*
 				    // handle redirects

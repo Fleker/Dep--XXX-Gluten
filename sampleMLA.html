@@ -1,0 +1,160 @@
+<html>
+<head>
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script src="formats/input.js"></script>
+	<script src="formats/build.js"></script>
+
+	<script src="formats/mla/format.js"></script>
+</head>
+<div class="header ui">
+	<u onclick="convertToInput();">Back to Editor</u>
+	<b>Export To:</b>
+	<u onclick="convertToXML();">XML</u>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<u onclick="convertToPreview();">Preview</u>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<u onclick="print();">Print Document</u>
+</div>
+
+<div class="body">
+<i>What kind of document do you wish to create?</i>
+<br>
+<input type="text" value="MLA - Essay" disabled="true">
+<br>
+<script>
+input();
+</script>
+</div>
+
+<script>
+function convertToInput() {
+ 	$('.xmlx').fadeOut(500);
+    $('.preview').fadeOut(500);
+    
+	$('.body').fadeIn(500);
+}
+function convertToXML() {
+ 	//a = Array of info
+ 	$('.body').fadeOut(500);
+ 	$('.preview').fadeOut(500);
+ 	x = toXML(a);
+ 	$('.xml').html(x);
+ 	$('.xmlx').fadeIn(500);
+}
+function convertToPreview() {
+	//a = Array of info
+ 	$('.body').fadeOut(500);
+ 	$('.xmlx').fadeOut(500);
+ 	x = toXML(a);
+ 	o = toPreview(x);
+ 	$('.preview').html('');
+ 	$('.preview').html(build(o))
+ 	$('.preview').fadeIn(500);
+}
+
+/* * * PRINT * * */ /* IGNORE */
+function print() {
+	convertToPreview();
+	Popup($('.preview').html());
+}
+function Popup(data)
+    {
+        var mywindow = window.open('', 'my div', 'height=window.innerHeight,width=window.innerWidth');
+        mywindow.document.write('<html><head><title>Printing '+o.title+'</title>');
+        /*optional stylesheet*/ 
+			//mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
+			mywindow.document.write('<style>.center { text-align: center;	padding: 0px; }</style>');
+        mywindow.document.write('</head><body >');
+        mywindow.document.write(data);
+        mywindow.document.write('</body></html>');
+
+        mywindow.print();
+        mywindow.close();
+
+        return true;
+    }
+</script>
+
+<div class="xmlx body">
+	<xmp class="xml">
+	
+	</xmp>
+</div>
+
+<div class="preview body">
+</div>
+
+<div class="footer ui">
+	<div class="count_words">
+		<div class="count_words_bar"></div><br>
+		<div class="count_words_number"></div>
+	</div>
+</div>
+
+<style>
+body {
+ 	background-color: #ddd;
+}
+.ui {
+ 	background-color: #ddd;
+ 	width:101%;
+ 	margin-left:-1%;
+ 	padding-left:1%;
+}
+.header {
+	position:fixed;
+	top:0%;
+	height:100px;
+}
+.body {
+ 	margin-top:105px;
+ 	background-color: white;
+}
+.xmlx {
+	display: none;
+	background-color: white;
+}
+.xml {
+	/*display: hidden;*/
+ 	width:90%;
+ 	margin-left:0%;
+ 	word-wrap: break-word;
+}
+.preview {
+ 	display: none;
+ 	width:90%;
+ 	margin-left:5%;
+ 	word-wrap: break-word;
+ 	background-color: white;
+}
+.footer {
+	position:fixed;
+	top:100%;
+	margin-top:-90px;
+	height:92px;
+}
+
+
+/* * * */
+.center {
+ 	text-align: center;
+ 	padding: 0px;
+}
+
+@media print {
+    .preview {
+        background-color: white;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin: 0;
+        #padding: 15px;
+        #font-size: 14px;
+        /* line-height: 18px; ** <- Hmmm */
+    }
+}
+
+</style>
+</html>

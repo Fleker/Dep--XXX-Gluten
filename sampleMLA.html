@@ -6,7 +6,7 @@
 
 	<script src="formats/mla/format.js"></script>
 </head>
-<div class="header ui">
+<div class="header ui bg">
 	<u onclick="convertToInput();">Back to Editor</u>
 	<b>Export To:</b>
 	<u onclick="convertToXML();">XML</u>
@@ -14,9 +14,19 @@
 	<u onclick="convertToPreview();">Preview</u>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	<u onclick="print();">Print Document</u>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<b>Options:</b>
+	Words:&nbsp;&nbsp;
+	Min&nbsp;
+	<input type="number" id="count_words_min" value="0" oninput="wordCount()" min="0" class="countinput">
+	&nbsp;&nbsp;Max&nbsp;
+	<input type="number" id="count_words_max" value="0" oninput="wordCount()" min="0" class="countinput">
+	&nbsp;&nbsp;&nbsp;Timer:&nbsp;&nbsp;
+	Minutes&nbsp;
+	<input type="number" id="timer_minutes" value="0" min="0">
 </div>
 
-<div class="body">
+<div class="body" id="body">
 <i>What kind of document do you wish to create?</i>
 <br>
 <input type="text" value="MLA - Essay" disabled="true">
@@ -29,9 +39,10 @@ input();
 <script>
 function convertToInput() {
  	$('.xmlx').fadeOut(500);
+ 	$('.xml').fadeOut(500);
     $('.preview').fadeOut(500);
     
-	$('.body').fadeIn(500);
+	$('#body').fadeIn(500);
 }
 function convertToXML() {
  	//a = Array of info
@@ -45,6 +56,7 @@ function convertToPreview() {
 	//a = Array of info
  	$('.body').fadeOut(500);
  	$('.xmlx').fadeOut(500);
+
  	x = toXML(a);
  	o = toPreview(x);
  	$('.preview').html('');
@@ -59,7 +71,7 @@ function print() {
 }
 function Popup(data)
     {
-        var mywindow = window.open('', 'my div', 'height=window.innerHeight,width=window.innerWidth');
+        var mywindow = window.open('', 'my div', 'height=$(window).width(),width=$(window).width()');
         mywindow.document.write('<html><head><title>Printing '+o.title+'</title>');
         /*optional stylesheet*/ 
 			//mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
@@ -73,6 +85,86 @@ function Popup(data)
 
         return true;
     }
+
+window.onload = function() {
+	document.onkeyup = function(e){ /* turn to content input only */
+	    if (!e) e=window.event;
+	
+		var k = e.keyCode;
+		console.log(k);
+		if(k) {
+			//every key input anywhere
+			c = getContent();
+			if(c.split(' ').length < 800)
+				wordCount();
+		}
+		if(k == 32) {
+         	//every space
+         	c = getContent();
+			if(c.split(' ').length >= 800)
+				wordCount();
+		}
+		
+	}
+	//console.log('keys');
+}
+function wordCount() {
+	//get min & max counts
+	min = $('#count_words_min').val();
+	max = $('#count_words_max').val();
+	
+	c = getContent();  
+	n = 0;
+	for(i in c.split(' ')) {
+		if(c.split(' ')[i].length) 
+			n++;
+	}
+	//n = c.split(' ').length;
+	
+	//now write to span
+	if(n == 1)
+		words = 'Word'
+	else
+		words = 'Words'
+	$('.count_words_number').html(words + ': ' + n);
+	
+	if(c.length == 0)
+		$('.count_words_number').html("Get started!");
+
+	//Draw
+	if((n <= min && min > 0) || (n >= max && max > 0)) {
+		$('.count_words_bar').css("background-color", "red");
+	}
+	if((n >= min && max == 0) || (n <= max && min == 0)) {
+     	$('.count_words_bar').css("background-color", "yellow");
+     	$('.count_words_bar').css('width', '100%');
+	}
+	if((n >= min && min > 0) && (n <= max && max > 0)) {
+	    $('.count_words_bar').css("background-color", "green");
+	    //$('.count_words_bar').css('width', '100%');
+	}
+	
+	if(n <= max && max > 0) {
+		$('.count_words_bar').css('width', 100*n/max+'%');
+	}
+	if(n >= max && max > 0) {
+		$('.count_words_bar').css('width', 100*max/n+'%');
+	}
+	if((n <= min && max == 0) || (n <= max && min == 0)) {
+		$('.count_words_bar').css('width', '50%');
+	}
+
+	$('.count_words_bar').show();
+	return n;
+}
+wordCount();
+function getContent() {
+ 	for(i in a) {
+ 	 	if(a[i] == 'content') {
+ 	 	 	return $('#'+i).val();
+ 	 	}
+ 	}
+}
 </script>
 
 <div class="xmlx body">
@@ -84,10 +176,16 @@ function Popup(data)
 <div class="preview body">
 </div>
 
-<div class="footer ui">
+<div class="footer ui bg">
 	<div class="count_words">
-		<div class="count_words_bar"></div><br>
+		<div class="count_words_bar"></div>
 		<div class="count_words_number"></div>
+	</div>
+	<div class="count_paragraphs">
+	
+	</div>
+	<div class="timer">
+		<div class="timer_txt"></div>
 	</div>
 </div>
 
@@ -96,10 +194,12 @@ body {
  	background-color: #ddd;
 }
 .ui {
- 	background-color: #ddd;
  	width:101%;
  	margin-left:-1%;
  	padding-left:1%;
+}
+.bg {
+	background-color: #ddd;
 }
 .header {
 	position:fixed;
@@ -109,6 +209,7 @@ body {
 .body {
  	margin-top:105px;
  	background-color: white;
+ 	overflow-y: auto;
 }
 .xmlx {
 	display: none;
@@ -133,7 +234,27 @@ body {
 	margin-top:-90px;
 	height:92px;
 }
+.count_words {
+	width: 100px;
+}
+.count_words_bar {
+	background-color: red;
+	width: 100px;
+	height: 1px;
+	padding-bottom: 7px;
+	display: none;
+}
+.countinput {
+	width: 55px;
+}
 
+#timer_minutes {
+	width: 60px;
+}
+
+.timer {
+	display: none;
+}
 
 /* * * */
 .center {

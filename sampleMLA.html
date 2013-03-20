@@ -4,7 +4,7 @@
 	<script src="formats/input.js"></script>
 	<script src="formats/build.js"></script>
 
-	<script src="formats/mla/format.js"></script>
+    <script src="formats/mla/format.js"></script>
 </head>
 <div class="header ui bg">
 	<u onclick="convertToInput();">Back to Editor</u>
@@ -29,7 +29,7 @@
 <div class="body" id="body">
 <i>What kind of document do you wish to create?</i>
 <br>
-<input type="text" value="MLA - Essay" disabled="true">
+<input type="text" value="MLA - Essay" disabled="disabled">
 <br>
 <script>
 input();
@@ -57,8 +57,9 @@ function convertToPreview() {
  	$('.body').fadeOut(500);
  	$('.xmlx').fadeOut(500);
 
- 	x = toXML(a);
- 	o = toPreview(x);
+ 	//x = toXML(a);
+ 	//o = toPreview(x);
+        o = inputToJson();
  	$('.preview').html('');
  	$('.preview').html(build(o))
  	$('.preview').fadeIn(500);
@@ -75,7 +76,10 @@ function Popup(data)
         mywindow.document.write('<html><head><title>Printing '+o.title+'</title>');
         /*optional stylesheet*/ 
 			//mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
-			mywindow.document.write('<style>.center { text-align: center;	padding: 0px; }</style>');
+			mywindow.document.write('<style>.center { text-align: center;	padding: 0px; font-size:12pt; font-family:Times; }</style>');
+                        if(doubleSpaced == true) {
+                            mywindow.document.write('<style>body { line-height: 2em; }</style>');
+                        }
         mywindow.document.write('</head><body >');
         mywindow.document.write(data);
         mywindow.document.write('</body></html>');
@@ -161,7 +165,7 @@ wordCount();
 function getContent() {
  	for(i in a) {
  	 	if(a[i] == 'content') {
- 	 	 	return $('#'+i).val();
+ 	 	 	return $('#'+i).text();
  	 	}
  	}
 }
@@ -210,6 +214,7 @@ body {
  	margin-top:105px;
  	background-color: white;
  	overflow-y: auto;
+        margin-bottom: -192px;
 }
 .xmlx {
 	display: none;
@@ -231,8 +236,8 @@ body {
 .footer {
 	position:fixed;
 	top:100%;
-	margin-top:-90px;
-	height:92px;
+	margin-top: -46px;
+	height: 48px;
 }
 .count_words {
 	width: 100px;
@@ -271,11 +276,34 @@ body {
         top: 0;
         left: 0;
         margin: 0;
-        #padding: 15px;
-        #font-size: 14px;
+        /*padding: 15px;
+        font-size: 14px;*/
         /* line-height: 18px; ** <- Hmmm */
     }
 }
 
+/* * * * */
+.contentinput {
+	width: 90%;
+}
+.input {
+	height: 400px;
+	font-family: Times;
+	font-size: 12pt;
+	border-color: #aaa;
+	border-style: solid;
+	padding: 5px;
+	width: 100%;
+	resize:both;
+        white-space:pre;
+}
+.toolbar {
+	width: 100%;
+	word-spacing: 10px;
+	background-color: #ddd;
+	border-style: solid;
+	border-color: #aaa;
+	padding-left: 10px;
+}
 </style>
 </html>

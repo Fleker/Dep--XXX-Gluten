@@ -1,0 +1,45 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    </head>
+    <body>
+        <span onclick="print();"> <b>Print</b></span><br>
+        <div class="preview" style="margin-left: 1in; margin-right: 1in;">
+            <div class="header" style="height:1in;" contenteditable="false">Felker 1</div>
+            <div class="body" contenteditable="true">Lorem ipsum mumbo jumbo will hoo doo you</div>
+            <div class="footer" contenteditable="false">1 Footnotes can go here.</div>
+        </div>
+        <script>
+            function print() {
+                Popup($('.preview').html());
+            }
+            function Popup(data)
+                {
+                    var mywindow = window.open('', 'my div', 'height=$(window).width(),width=$(window).width()');
+                    mywindow.document.write('<html><head><title>Printing Paper</title>');
+                    /*optional stylesheet*/ 
+                                    //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
+                                    mywindow.document.write('<style>.center {  text-align: center;	padding: 0px; font-size:12pt; font-family:Times; }</style>');
+                                    if(false) {
+                                        mywindow.document.write('<style>body { line-height: 2em; margin-left:1in; margin-right:1in; }</style>');
+                                    }
+                    mywindow.document.write('</head><body >');
+                    mywindow.document.write(data);
+                    mywindow.document.write('</body></html>');
+
+                    mywindow.print();
+                    mywindow.close();
+
+                    return true;
+                }
+
+        </script>
+    </body>
+</html>

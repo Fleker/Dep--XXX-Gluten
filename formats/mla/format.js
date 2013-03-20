@@ -1,8 +1,7 @@
 function input() {
 	insert('title', 'Title');
 	newLine();
-	insert('firstname', 'First Name', 'Please type your name.');
-	insert('lastname', 'Last Name');
+	insert('author', null, 'Please type your name.');
 	block();
 	insert('class', 'Name of the class');
 	newLine();
@@ -11,20 +10,45 @@ function input() {
 	insert('due', 'Due Date', 'dd Month yyyy');
 	block();
 	insert('content');
+
+	toolbarRow(['©haracter', 'Header', 'Cite', 'Image']);
+	//quote('cite()');
 }         
 
 function build(obj) {
 	//format the header
-	output(obj.firstname + ' ' + obj.lastname);
-	block();
+        //output('<div style="line-height: 2em">');
+        doubleSpace();
+	output(obj.author.firstname + ' ' + obj.author.lastname);
+		newLine();
 	output(obj.class);
-	block();
+		newLine();
 	output(obj.teacher);
-	block();
+		newLine();
 	output(obj.due);
-	block();
+		newLine();
 	center(obj.title);
-	block();
+		//newLine();
+        //for all in obj.content
 	output(obj.content);
-	//double space it.
+        for(i in obj.content) {
+            if(obj.content[i].type == 'paragraph') {
+                output('&emsp;'+obj.content[i].value+'<br>');
+            }
+            else if(obj.content[i].type == 'citation') {
+                
+            }
+            else {
+                output('<br>'+obj.content[i].value);
+            }
+            
+        }
+        //pagination([1, 1, 1, 1], [8.5, 11])
+        finish();
+}
+
+function parseWriting(text) {
+    //add more special types of formatting.
+    
+    
 }

@@ -1,0 +1,1 @@
+This directory stores project files and preferences so the files are easily edited in NetBeans.

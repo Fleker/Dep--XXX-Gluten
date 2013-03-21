@@ -11,10 +11,10 @@ and open the template in the editor.
     </head>
     <body>
         <span onclick="print();"> <b>Print</b></span><br>
-        <div class="preview" style="margin-left: 1in; margin-right: 1in;">
-            <div class="header" style="height:1in;" contenteditable="false">Felker 1</div>
-            <div class="body" contenteditable="true">Lorem ipsum mumbo jumbo will hoo doo you</div>
-            <div class="footer" contenteditable="false">1 Footnotes can go here.</div>
+        <div class="preview" style="margin-left: 1in; margin-right: 1in; height: 11in;">
+            <div class="header" style="height:0.5in;" contenteditable="false">Felker 1</div>
+            <div class="body" contenteditable="true" style="max-height: 9in; height: 9in;">Lorem ipsum mumbo jumbo will hoo doo you</div>
+            <div class="footer" style="margin-bottom: -0.5in; min-height: 0.5in;" contenteditable="false">1 Footnotes can go here.</div>
         </div>
         <script>
             function print() {
@@ -28,7 +28,7 @@ and open the template in the editor.
                                     //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
                                     mywindow.document.write('<style>.center {  text-align: center;	padding: 0px; font-size:12pt; font-family:Times; }</style>');
                                     if(false) {
-                                        mywindow.document.write('<style>body { line-height: 2em; margin-left:1in; margin-right:1in; }</style>');
+                                        mywindow.document.write('<style>body { line-height: 2em; margin-left:1in; margin-right:1in; margin-top:0.5in; margin-bottom:0.5in; }</style>');
                                     }
                     mywindow.document.write('</head><body >');
                     mywindow.document.write(data);

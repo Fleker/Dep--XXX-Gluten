@@ -7,21 +7,91 @@ and open the template in the editor.
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     </head>
     <body>
         <!--this views well at 67%-->
-        <div style="height: 9in;
+        
+        <!-- Set Rules -->
+        <div style="height: 1in; display:none" class="ruler" >n.a</div>
+        <div style="display:none;" class="full">
+            
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin volutpat placerat dui, non vulputate lacus vulputate a. Aenean neque ligula, facilisis eget hendrerit et, feugiat id enim. In justo odio, ullamcorper eu egestas a, porttitor at lacus. Phasellus semper sapien sit amet sem tincidunt in dictum dui tempus. Cras semper massa eu magna adipiscing varius. Integer eleifend tincidunt mi, nec dictum diam imperdiet et. Proin ornare dui et urna blandit vestibulum vitae a sem. Nulla dolor risus, convallis nec pellentesque quis, euismod ac nisl. Nam adipiscing tempus sem quis ornare. Phasellus lacinia erat quis nisl accumsan convallis. Nunc iaculis tincidunt varius. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer nisl libero, imperdiet quis fermentum ac, bibendum quis felis. Morbi erat turpis, laoreet in laoreet id, placerat ut lectus. Ut commodo, justo nec interdum eleifend, diam ante pharetra diam, in auctor turpis justo vel risus.
+            <br>
+Nulla augue metus, commodo eu gravida vitae, fermentum eget leo. Nunc porta tortor non nibh commodo ut volutpat risus aliquet. Suspendisse ante dolor, venenatis elementum lobortis ut, commodo mollis quam. Nulla id quam quis diam adipiscing bibendum at sed lorem. Nullam dictum lectus et dui fringilla volutpat. Sed ante nulla, adipiscing non cursus non, fermentum in augue. Fusce mattis ipsum sed lorem rutrum interdum. Nullam rutrum pulvinar est, sed viverra est porta quis. Fusce posuere lorem consectetur sapien accumsan hendrerit cursus tellus sodales. Nulla pretium cursus enim ac ornare. Mauris lorem dui, porttitor sit amet ornare scelerisque, fermentum sit amet dolor. Donec blandit, erat quis hendrerit tincidunt, dolor risus aliquam ante, sit amet placerat justo turpis non lorem. Mauris tempus libero vel augue lacinia faucibus. Curabitur fringilla blandit lectus, id malesuada dolor aliquet ut. Nunc feugiat congue porta. Sed aliquam sodales molestie.
+<br>
+In at nibh libero, et tincidunt mi. Quisque scelerisque metus et sem placerat ut volutpat est ultricies. Aenean et dolor lectus, et imperdiet leo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque vel felis ac neque posuere fermentum. Sed at leo ipsum. Pellentesque et magna id nibh pharetra sollicitudin vel nec tellus.
+<br>    
+Vestibulum ac est eros, eu rhoncus diam. Etiam odio nisl, tristique a posuere interdum, ultrices et dolor. Aliquam erat volutpat. Maecenas convallis urna non risus aliquam et tristique magna ultrices. Aliquam nec tellus nec est auctor condimentum ut sit amet risus. Nulla id mi est, nec ornare ante. Praesent risus orci, feugiat ut lobortis interdum, dictum quis turpis. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent mi mi, egestas in ullamcorper id, tristique id dolor. Aliquam egestas enim non dolor varius sit amet ultrices metus placerat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum erat purus, accumsan non bibendum et, aliquam quis odio. Sed suscipit, eros et pharetra congue, lorem lorem vestibulum mauris, non rhoncus purus velit non neque. Nam accumsan eleifend porttitor. Aliquam vitae ullamcorper purus.
+<br>
+Sed id velit neque. Integer et imperdiet orci. Vivamus hendrerit orci eget diam vulputate sagittis. Nulla volutpat tempor sapien ac viverra. Phasellus at massa eros, a tincidunt neque. Sed in quam erat. Vestibulum in purus non odio molestie sollicitudin a sed ligula. Pellentesque eget quam sapien. Nullam eu volutpat nisl
+            
+            
+        </div>
+        
+        <div style="height: 11in;
 padding-left: 1in;
 padding-right: 1in;
 padding-top: 0.5in;
 padding-bottom: 0.5in;
 background-color: #eee;
 margin-top: -0.08in;
-margin-left: -0.08in;">
-            <div style="height: 0.5in"> Felker 1 </div>
-            <div style="max-height: 9in; height: 9in;">Mumbo jumbo will hoo doo you.</div>
-            <div style="min-height: 0.5in;
-                margin-top: -0.5in;">1. This document is a lie.<br>This lie is a document.<br>*Pay no attention to the statements above.<br>**Or do, I can't tell you what to do.</div>
+margin-left: -0.08in;
+
+width:8.5in;
+">
+            <div class="header" style="height: 0.5in"> Felker 1 </div>
+            <div class="body" style="height: 11in;">Mumbo jumbo will hoo doo you.</div>
+            <div class="footer" id="footer" style="min-height: 0.5in;">
+                 1. A<br>
+                 2. B<br>
+                 3. C<br>
+                 4. D<br>
+                 <!--5. E<br>-->
+            </div>
         </div>
+
+            <!--<div style="min-height: 0.5in; height: 0.5in;
+                margin-top: -0.5in;">1. This document is a lie.<br>This lie is a document.<br>*Pay no attention to the statements above.<br>**Or do, I can't tell you what to do.</div>
+        </div>-->
+        
+        <style>
+            .wrap { 
+                min-height:100%;
+                margin-bottom: -.4in; /* same as footer */
+              }
+              .push, #xfooter {
+                height:.4in;
+              }</style>
+        
+        <script>
+           //calculates margin-top in pixels
+           h = $('.header').height();
+           //--h = h*2;
+           //inch -> pixels
+           //now get footer height
+           //place in for-page; each page is separate.
+           f = $('.footer').height();
+           //minus one??
+           if(f > h)
+               $('.footer').css('margin-top', '-'+(f/(2 * h) - 1)+'in');
+           //assumes 8.5x11
+           ///$('.body').height(10*(h*2)-f);
+           $('.body').height(1156-f);
+         
+         
+         /* * * */
+         //Get .full
+         content = $('.full').html();
+         r = $('.ruler').height();
+         c = $('.full').height();
+         
+         //get height, generally height - 2
+         //for 8.5x11 sheets
+         pages = Math.ceil(c/(9*r));
+         
+         //for(i=0;i<pages;i++)
+         $('.body').html(content);
+        </script>
     </body>
 </html>

@@ -54,6 +54,17 @@ function inputToJson() {
             for(j in ca){
                 if(ca[j].length && ca[j] != '<br>' && ca[j] != '</div>') {
                     o.content[j-k] = {type: 'paragraph', value: ca[j]};
+                    
+                    //parse special items
+                    //Citations
+                    /*while(ca[j].indexOf('<u class="citation">') > -1) {
+                        cite = ca[j].split('<u class="citation">');
+                        for(i in cite) {
+                            
+                            o.content[j-k]
+                            
+                        }
+                    }*/
                 }
                 else
                     k++;

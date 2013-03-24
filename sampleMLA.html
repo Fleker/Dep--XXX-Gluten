@@ -3,6 +3,7 @@
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script src="formats/input.js"></script>
 	<script src="formats/build.js"></script>
+        <script src="card.js"></script>
 
     <script src="formats/mla/format.js"></script>
 </head>
@@ -34,6 +35,16 @@
 <script>
 input();
 </script>
+<div class="citation">
+        
+</div>
+</div>
+
+<!-- Card -->
+<div class="card card2" style="opacity: 0">
+    <div class="cardBorder card" <!--style="border-color:#d00"-->>
+		<div class="cardHead"></div>
+	</div>
 </div>
 
 <script>
@@ -95,7 +106,7 @@ window.onload = function() {
 	    if (!e) e=window.event;
 	
 		var k = e.keyCode;
-		console.log(k);
+		//console.log(k);
 		if(k) {
 			//every key input anywhere
 			c = getContent();
@@ -108,6 +119,19 @@ window.onload = function() {
 			if(c.split(' ').length >= 800)
 				wordCount();
 		}
+                if(k == 222) {
+                    //citations
+                    
+                    //output another quote, identical to the first quote character
+                    
+                    //$('.input').html($('.input').substring(0,cursorPos())) + '"' + $('.input').substring(cursorPos()));
+                    quote = $('.input').html().substr(cursorPos()-1,1);
+                    if(quote == '"') {
+                        
+                        cursorInsert(quote);
+                        launchCitation();
+                    }
+                }
 		
 	}
 	//console.log('keys');
@@ -260,7 +284,15 @@ body {
 .timer {
 	display: none;
 }
-
+.citation {
+    display:none;
+    width: 100px;
+    height:100px;
+}
+.tool {
+    cursor: pointer;
+    
+}
 /* * * */
 .center {
  	text-align: center;
@@ -304,6 +336,43 @@ body {
 	border-style: solid;
 	border-color: #aaa;
 	padding-left: 10px;
+}
+
+/* * * CARDS * * */
+.card {
+	background-color:#eeeeee;
+	box-shadow:black, 0px, 0px, 5px;
+	height: 230px;
+	width: 530px;
+	box-shadow: 0px 0px 2px #000;
+	/*position: relative;*/
+        position:fixed;
+        left: 50px;
+}
+.card2 {
+	/* stuff exclusive to outside of card */
+ 	padding: 10px;
+}
+.cardHead {
+	font-size:15pt;
+	font-size: 15pt;
+	background-color: inherit;
+	margin-top: -10px;
+	margin-left: 15px;
+	padding-left: 7px;
+	margin-right: 55px;
+}
+.cardBorder {
+ 	border: solid 1px;
+ 	height: 208px;
+	width: 523px;
+	padding-left: 5px;
+        margin-top: 10px;
+        left:60px;
+}
+.citecard {
+    overflow:auto;
+    height:132px;    
 }
 </style>
 </html>

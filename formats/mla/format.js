@@ -11,7 +11,7 @@ function input() {
 	block();
 	insert('content');
 
-	toolbarRow(['©haracter', 'Header', 'Cite', 'Image', 'Long Quote']);
+	toolbarRow(['©haracter', 'Header', 'Citation', 'Image', 'Long Quote']);
 	//quote('cite()');
 }         
 

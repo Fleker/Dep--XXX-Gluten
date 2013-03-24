@@ -54,9 +54,15 @@ function divInsert(type) {
     }
 }
 
-function launchCitation() {
-    
-    //$('.citation').show();
+citations = new Array();
+function launchCitation(index) {
+    if(index == undefined) {
+        cursorInsert('<u class="citation" data-id="'+citations.length+'" ondblclick="launchCitation('+citations.length+'">QUOTE&nbsp;</u>');
+    }
+    else {
+        //preload
+    }
+        //$('.citation').show();
     card('citation', 'Citing a Reference');
     var cardCiteActive = false;
     o = 'What do you want to cite?<br><input class="citelist" type="text" list="citelist">';
@@ -145,7 +151,11 @@ function citeCard(cardCiteActive) {
     cardCiteActive = true;
 }
 function citeCardOK() {
-    $('.citecard').append('<br><button onclick="hideCard">Add Citation</button>');    
+    $('.citecard').append('<br><button onclick="hideCard();citeSubmit();">Add Citation</button>');    
+}
+function citeSubmit() {
+    citations.push({});
+    
 }
 //Tim Down -- http://stackoverflow.com/questions/4767848/get-caret-cursor-position-in-contenteditable-area-containing-html-content
 function getCharacterOffsetWithin(range, node) {

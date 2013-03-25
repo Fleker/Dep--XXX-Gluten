@@ -128,8 +128,8 @@ window.onload = function() {
                     quote = $('.input').html().substr(cursorPos()-1,1);
                     if(quote == '"') {
                         
-                        cursorInsert(quote);
-                        launchCitation();
+                        //cursorInsert(quote);
+                        launchCitation(undefined, quote);
                     }
                 }
 		
@@ -284,11 +284,11 @@ body {
 .timer {
 	display: none;
 }
-.citation {
+/*.citation {
     display:none;
     width: 100px;
     height:100px;
-}
+}*/
 .tool {
     cursor: pointer;
     
@@ -375,7 +375,7 @@ body {
     height:132px;    
 }
 u.citation {
-    color: #0ff;
+    text-decoration: none; border-bottom: 1px solid #0ff
 }
 </style>
 </html>

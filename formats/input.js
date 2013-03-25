@@ -55,9 +55,9 @@ function divInsert(type) {
 }
 
 citations = new Array();
-function launchCitation(index) {
+function launchCitation(index, quote) {
     if(index == undefined) {
-        cursorInsert('<u class="citation" data-id="'+citations.length+'" ondblclick="launchCitation('+citations.length+'">QUOTE&nbsp;</u>');
+        cursorInsert('<u class="citation" data-id="'+citations.length+'" ondblclick="launchCitation('+citations.length+')">QUOTE&nbsp;</u>'+quote);
     }
     else {
         //preload

@@ -14,7 +14,7 @@
         if (selectedText) {
         	//Now try to identify the type of selection.
         	if(selectedText.indexOf(' ') == -1) {
-        	 	card('word', selectedText);
+        	 	//card('word', selectedText);
         	}
         }
         else if(!cardActive) {

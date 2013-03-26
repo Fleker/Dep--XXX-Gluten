@@ -44,6 +44,7 @@ function build(obj) {
             
         }
         //pagination([1, 1, 1, 1], [8.5, 11])
+        //format('citation', '(LAST PAGE)');
         finish();
 }
 

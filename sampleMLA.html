@@ -129,6 +129,7 @@ window.onload = function() {
                     if(quote == '"') {
                         
                         //cursorInsert(quote);
+                        window.cursorposition = cursorPos();
                         launchCitation(undefined, quote);
                     }
                 }
@@ -136,6 +137,9 @@ window.onload = function() {
 	}
 	//console.log('keys');
 }
+$('.input').mouseleave(function () {
+    window.cursorposition = cursorPos();    
+});
 function wordCount() {
 	//get min & max counts
 	min = $('#count_words_min').val();

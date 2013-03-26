@@ -56,16 +56,18 @@ function divInsert(type) {
 
 citations = new Array();
 function launchCitation(index, quote) {
-    if(index == undefined) {
-        cursorInsert('<u class="citation" data-id="'+citations.length+'" ondblclick="launchCitation('+citations.length+')">QUOTE&nbsp;</u>'+quote);
+    //$('.citation')[0].getAttribute('data-id')
+    if(quote == undefined) {
+        quote = '';        
     }
-    else {
-        //preload
+    if(index == undefined) {
+        cursorInsert('<u class="citation" data-id="'+citations.length+'" ondblclick="launchCitation('+citations.length+')">QUOTE</u>'+quote+'&nbsp;&nbsp;');
+        index = citations.length;
     }
         //$('.citation').show();
     card('citation', 'Citing a Reference');
     var cardCiteActive = false;
-    o = 'What do you want to cite?<br><input class="citelist" type="text" list="citelist">';
+    o = 'What do you want to cite?<br><input class="citelist" type="text" list="citelist"id="citeCardType">';
     o = o + '<datalist id="citelist">\n\
                 <option value="Article Online">\n\
                 <option value="Book - Print">\n\
@@ -85,7 +87,15 @@ function launchCitation(index, quote) {
     $('.citelist')[0].focus();
     citeCard(cardCiteActive);
     
+    if(citations.length != index) {
+        $('#citeCardType').val(citations[index].type);
+        citeBuilder();
+    }
+    
     $(".citelist").bind("input contextmenu invalid", function(event) {
+        citeBuilder();
+    });
+    function citeBuilder() {
         var t = new Date();
         if(t.getMonth() + 1 < 10)
             month = '0' + (t.getMonth() + 1);
@@ -99,19 +109,17 @@ function launchCitation(index, quote) {
         //today = new Date().toJSON().substring(0,10);
         //today = t.toLocaleDateString();
         
-        var title = '<input type="text" placeholder="Title" style="width: 30em">';
-        var description = '<input type="text" style="width:35em" placeholder="If no official title, please describe">';
-        var bookpub = '<br>&emsp;<input type="text" placeholder="Volume" style="width: 5em">&nbsp;<input type="text" placeholder="Edition" style="width: 6em">&nbsp;<input type="text" placeholder="Series">';
-        var author = '<br>&emsp;Author: <input type="text" placeholder="First">&nbsp;<input type="text" placeholder="M" style="width: 2em">&nbsp;<input type="text" placeholder="Last">';
-        var publication = '<br>&emsp;Publication: <input type="text" placeholder="Publisher">&nbsp;<input type="text" placeholder="City">&nbsp;<input type="text" placeholder="Year" style="width: 4em">';
-        var website = '<br>&emsp;Website: <input type="text" placeholder="Website Title">&nbsp;<input type="text" placeholder="Online Publisher"><br>&emsp;&nbsp;<input placeholder="URL">';
-        var pubdate = '<br>&emsp;&emsp;Published on: <input type="date">';
-        var accdate = '<br>&emsp;&emsp;Accessed on: <input type="date" value='+today+'>';
-        var database = '<br>&emsp;Database: <input placeholder="Database Name">&nbsp;<input type="url" placeholder="url" style="width: 30em">';
-        var medium = '<br>&emsp;<input placeholder="Medium">';
-        
-        
-        
+        var title = '<input type="text" placeholder="Title" style="width: 30em" id="citeCardTitle">';
+        var description = '<input type="text" style="width:35em" placeholder="If no official title, please describe" id="citeCardDescription">';
+        var bookpub = '<br>&emsp;<input type="text" placeholder="Page" style="width: 4em" id="citeCardPage">&nbsp;<input type="text" placeholder="Volume" style="width: 5em" id="citeCardVolume">&nbsp;<input type="text" placeholder="Edition" style="width: 6em" id="citeCardEdition">&nbsp;<input type="text" placeholder="Series" id="citeCardSeries">';
+        var author = '<br>&emsp;Author: <input type="text" placeholder="First" id="citeCardFirst">&nbsp;<input type="text" placeholder="M" style="width: 2em" id="citeCardM">&nbsp;<input type="text" placeholder="Last" id="citeCardLast">';
+        var publication = '<br>&emsp;Publication: <input type="text" placeholder="Publisher" id="citeCardPublisher">&nbsp;<input type="text" placeholder="City" id="citeCardCity">&nbsp;<input type="text" placeholder="Year" style="width: 4em" id="citeCardYear">';
+        var website = '<br>&emsp;Website: <input type="text" placeholder="Website Title" id="citeCardWebsite">&nbsp;<input type="text" placeholder="Online Publisher" id="citeCardWebPublisher"><br>&emsp;&nbsp;<input placeholder="URL" id="citeCardUrl">';
+        var pubdate = '<br>&emsp;&emsp;Published on: <input type="date" id="citeCardPublished">';
+        var accdate = '<br>&emsp;&emsp;Accessed on: <input type="date" value='+today+' id="citeCardAccessed">';
+        var database = '<br>&emsp;Database: <input placeholder="Database Name" id="citeCardDatabase">&nbsp;<input type="url" placeholder="url" style="width: 30em" id="citeCardDUrl">';
+        var medium = '<br>&emsp;<input placeholder="Medium" id="citeCardMedium">';
+              
         z = $('.citelist').val();
         if(z == 'Book - Print') {
             $('.citecard').html('\n\
@@ -143,7 +151,31 @@ function launchCitation(index, quote) {
                 '+title+description+author+website+pubdate+accdate);
             citeCardOK();
         }
-    });
+        
+        
+        if(index != citations.length) {
+            //preload
+            $('#citeCardTitle').val(citations[index].title);
+            $('#citeCardPage').val(citations[index].page);
+            $('#citeCardVolume').val(citations[index].volume);
+            $('#citeCardEdition').val(citations[index].edition);
+            $('#citeCardSeries').val(citations[index].series);
+            $('#citeCardFirst').val(citations[index].first);
+            $('#citeCardM').val(citations[index].m);
+            $('#citeCardLast').val(citations[index].last);
+            $('#citeCardPublisher').val(citations[index].publisher);
+            $('#citeCardCity').val(citations[index].city);
+            $('#citeCardYear').val(citations[index].year);
+            $('#citeCardWebsite').val(citations[index].website);
+            $('#citeCardWebPublisher').val(citations[index].webpublisher);
+            $('#citeCardUrl').val(citations[index].url);
+            $('#citeCardPublished').val(citations[index].published);
+            $('#citeCardDatabase').val(citations[index].database);
+            $('#citeCardDUrl').val(citations[index].durl);
+            $('#citeCardMedium').val(citations[index].medium);
+            //console.log(citations[index]);
+        }
+    };
 }
 function citeCard(cardCiteActive) {
     if(!cardCiteActive)
@@ -154,7 +186,27 @@ function citeCardOK() {
     $('.citecard').append('<br><button onclick="hideCard();citeSubmit();">Add Citation</button>');    
 }
 function citeSubmit() {
-    citations.push({});
+    citations.push({
+        'type': $('#citeCardType').val(),
+        'title': $('#citeCardTitle').val(),
+        'page': $('#citeCardPage').val(),
+        'volume': $('#citeCardVolume').val(),
+        'edition': $('#citeCardEdition').val(),
+        'series': $('#citeCardSeries').val(),
+        'first': $('#citeCardFirst').val(),
+        'm': $('#citeCardM').val(),
+        'last': $('#citeCardLast').val(),
+        'publisher': $('#citeCardPublisher').val(),
+        'city': $('#citeCardCity').val(),
+        'year': $('#citeCardYear').val(),
+        'website': $('#citeCardWebsite').val(),
+        'webpublisher': $('#citeCardWebPublisher').val(),
+        'url': $('#citeCardUrl').val(),
+        'published': $('#citeCardPublished').val(),
+        'database': $('#citeCardDatabase').val(),
+        'durl': $('#citeCardDUrl').val(),
+        'medium': $('#citeCardMedium').val()
+    });
     
 }
 //Tim Down -- http://stackoverflow.com/questions/4767848/get-caret-cursor-position-in-contenteditable-area-containing-html-content
@@ -199,8 +251,12 @@ function cursorPos() {
     return getCharacterOffsetWithin(range, el);  
 }
 function cursorInsert(text) {
-    var p = cursorPos();
-    $('.input').html($('.input').html().substring(0,cursorPos()) + text + $('.input').html().substring(cursorPos()));
+    console.log(cursorPos());
+    //var p = cursorPos();
+    var p = window.cursorposition;
+    console.log(p);
+    console.log($('.input').html().substring(0,p) + text + $('.input').html().substring(p));
+    $('.input').html($('.input').html().substring(0,p) + text + $('.input').html().substring(p));
     setCursorPos(savedRange);
 }
 function setCursorPos(savedRange) {

@@ -44,12 +44,19 @@ function build(obj) {
             
         }
         //pagination([1, 1, 1, 1], [8.5, 11])
-        //format('citation', '(LAST PAGE)');
+        format('citation', '(LAST PAGE)');
         finish();
 }
 
 function parseWriting(text) {
     //add more special types of formatting.
     
+    
+}
+function formatBibliography() {
+    bibliographyTitle('Works Cited');
+    for(i in citations) {
+        bibliography('Book - Print', '<i>TITLE</i>', i);
+    }
     
 }

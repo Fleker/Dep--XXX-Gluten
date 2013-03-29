@@ -43,6 +43,7 @@ function parseContent(e) {
     return c;
 }
 function inputToJson() {
+    o = {};
     for(i in a) {
         if(a[i] == 'content') {
             //split into <br>, pair into blanks.
@@ -79,6 +80,9 @@ function inputToJson() {
         else
             o[a[i]] = $('#'+i).val();
     }
+    //completely unrelated, but, sort through citations now so they'll be ready by the time we get to bibliography
+    citations.sort(compare);
+    
     return o;
 }
 function toPreview(x) {
@@ -149,9 +153,70 @@ function doubleSpace() {
    $('.preview').css('line-height', '2em');
    doubleSpaced = true;
 }
+function format(type, style) {
+    if(type == 'citation') {
+        index = 0;
+        c = $('.preview').html();
+        for(i in citations) {
+            var currentPos = c.substr(index);
+            index = currentPos.indexOf('<u class="citation"');
+            //currentPos.substring(index, currentPos.indexOf('>'));
+            endtag = currentPos.indexOf('</u>');
+            style = style.replace("LAST", citations[i].last);
+            style = style.replace("PAGE", citations[i].page);
+            console.log(style, index, endtag);
+            if(index > -1)
+                $('.preview').html($('.preview').html().substring(0,endtag+6)+' '+style+' '+$('.preview').html().substring(endtag+6));
+        }
+        $('.preview').html($('.preview').html().replace(/<u class="citation"[^<]+>/gi, ''));
+    } else {
+        index = 0;
+        c = $('.preview').html();
+        for(i in citations) {
+            var currentPos = c.substr(index);
+            index = currentPos.indexOf('<u class="'+type+'"');
+            starttag = currentPos.indexOf('>');
+            endtag = currentPos.indexOf('</u>');
+            string = currentPos.substring(starttag+1, endtag);
+            
+            /*style = style.replace("LAST", citations[i].last);
+            style = style.replace("PAGE", citations[i].page);*/
+            //console.log(style, index, endtag);
+            if(index > -1)
+                $('.preview').html($('.preview').html().substring(0,starttag)+string+$('.preview').html().substring(endtag));
+        }
+        $('.preview').html($('.preview').html().replace(/<u class="citation"[^<]+>/gi, ''));
+    
+    }
+}
 function finish() {
+    formatBibliography();
     $('.preview').html($('.preview').html().toString().replace(/<p>/gi, '<p style="display:none">'));
     $('.preview').html($('.preview').html().toString().replace('</p>', ' ', 'gi'));
+    $('.preview').append(b);
     
     //$('.preview.p').css('display', 'none');
+}
+
+//bibliography
+function compare(a,b) {
+  if (a.last_nom < b.last)
+     return -1;
+  if (a.last_nom > b.last)
+    return 1;
+  return 0;
+}
+
+b = '';
+function bibliographyTitle(text) {
+    b = b + '<div class="center">'+text+'</div>';    
+}
+function bibliography(type, style, i) {
+    var cite = citations[i];
+    style = style.replace('TITLE', cite.title, 'g')
+     
+    if(cite.type == type)
+        b = b + style;
+    
+    
 }

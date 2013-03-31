@@ -4,7 +4,10 @@
 	<script src="formats/input.js"></script>
 	<script src="formats/build.js"></script>
         <script src="card.js"></script>
-
+        <script src="../jspdf/jspdf.js"></script>
+        <script src="../jspdf/jspdf.plugin.from_html.js"></script>
+        <script src="holoribbon/holoribbon.js"></script>
+        
     <script src="formats/mla/format.js"></script>
 </head>
 <div class="header ui bg">
@@ -26,6 +29,62 @@
 	Minutes&nbsp;
 	<input type="number" id="timer_minutes" value="0" min="0">
 </div>
+<script>
+    newRibbon('.header', {
+       'File': new Array(
+               {'text': 'Edit', 'img': '', 'action': 'convertToInput()'},
+               {'text': 'View XML', 'img': '', 'action': 'convertToXML()'},
+               {'text': 'Preview', 'img': '', 'action': 'convertToPreview()'}
+           
+       ),
+       'Options': new Array(
+                {'group': 'Words', 'value': 'Min: <input type="number" id="count_words_min" value="0" oninput="wordCount()" min="0" class="countinput"><br>Max: <input type="number" id="count_words_max" value="0" oninput="wordCount()" min="0" class="countinput">'},
+                {'group': 'Timer', 'value': 'Minutes: <input type="number" id="timer_minutes" value="0" min="0">'}
+           
+       )       
+    });
+    ribbonSwitch(1);
+</script>
+<style>
+    .ribbonhead {
+        width:100%;
+        margin-left:5px;
+        margin-top:5px;
+    }
+    .ribbonheader {
+        width: 150px;
+        text-align: center;
+    }
+    .ribbonstreamer {
+        width:100%;
+        margin-left:5px;
+        height:5px;
+        margin-top:-22px;
+        /*background-color:#0066cc;
+    */}
+    .ribbonstreameritem {
+        width:150px;
+        height:5px;
+        /*border-bottom-style:solid;*/
+        border-bottom-color:#06c;
+        /*background-color:#06c;*/
+    }
+    .ribbonbutton {
+        width: 80px;
+        height: 60px;
+        padding-right: 35px;
+        /*background-color: rgba(0,0,0,.1);*/
+    }
+    .ribbongroup {
+        margin-left:-100%;
+        position: fixed;
+        top: 40px;
+    }
+    .ribbonbody {
+        position:fixed;
+    }
+    
+</style>
 
 <div class="body" id="body">
 <i>What kind of document do you wish to create?</i>
@@ -71,9 +130,13 @@ function convertToPreview() {
  	//x = toXML(a);
  	//o = toPreview(x);
         o = inputToJson();
- 	$('.preview').html('');
- 	$('.preview').html(build(o))
- 	$('.preview').fadeIn(500);
+ 	//$('.preview').html('');
+ 	$('.previewFullBody').html(build(o));
+        
+        $('.preview').fadeIn(500);
+        $('.previewCover').fadeIn(500);
+ 	$('.previewPaginated').fadeIn(500);
+        $('.previewBibliography').fadeIn(500);
 }
 
 /* * * PRINT * * */ /* IGNORE */
@@ -206,6 +269,14 @@ function getContent() {
 </div>
 
 <div class="preview body">
+    <div class="previewFullHeader" id="previewFullHeader"></div>
+    <div class="previewFullBody"></div>
+    
+    <div class="previewCover page"></div>
+    <div class="previewPaginated page"></div>
+    <div class="previewBibliography page"></div>
+    
+    <button onclick="demoFromHTML()">Download PDF</button>
 </div>
 
 <div class="footer ui bg">
@@ -236,10 +307,10 @@ body {
 .header {
 	position:fixed;
 	top:0%;
-	height:100px;
+	height:160px;
 }
 .body {
- 	margin-top:105px;
+ 	margin-top:160px;
  	background-color: white;
  	overflow-y: auto;
         margin-bottom: -192px;
@@ -254,7 +325,7 @@ body {
  	margin-left:0%;
  	word-wrap: break-word;
 }
-.preview {
+.previewPaginated {
  	display: none;
  	width:90%;
  	margin-left:5%;
@@ -379,7 +450,25 @@ body {
     height:132px;    
 }
 u.citation {
-    text-decoration: none; border-bottom: 1px solid #0ff
+    text-decoration: none; border-bottom: 1px solid; border-color: #0ff;
+}
+.page {
+    /*height: in;
+    */padding-left: 1in;
+    padding-right: 1in;
+    /*padding-top: 0.5in;
+    padding-bottom: 0.5in;
+    *//*background-color: #eee;
+    */margin-top: -0.08in;
+    margin-left: -0.08in;
+
+    width:8.5in;
+}
+.previewFullBody {
+    display:none;
+}
+.previewFullHeader {
+    display:none;
 }
 </style>
 </html>

@@ -150,13 +150,13 @@ function xmlToJson(xml) {
 //related to output
 doubleSpaced = false;
 function doubleSpace() {
-   $('.preview').css('line-height', '2em');
+   $('.previewPaginated').css('line-height', '2em');
    doubleSpaced = true;
 }
 function format(type, style) {
-    if(type == 'citation') {
+    if(type == 'citation' || type == 'citation-main') {
         index = 0;
-        c = $('.preview').html();
+        c = $('.previewFullBody').html();
         for(i in citations) {
             var currentPos = c.substr(index);
             index = currentPos.indexOf('<u class="citation"');
@@ -165,13 +165,15 @@ function format(type, style) {
             style = style.replace("LAST", citations[i].last);
             style = style.replace("PAGE", citations[i].page);
             console.log(style, index, endtag);
-            if(index > -1)
-                $('.preview').html($('.preview').html().substring(0,endtag+6)+' '+style+' '+$('.preview').html().substring(endtag+6));
+            if(index > -1 && ((citations[i].main.length != 2 && type == 'citation') || (citations[i].main.length == 2 && type == 'citation-main') ))
+                $('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+6)+' '+style+' '+$('.previewFullBody').html().substring(endtag+6));
         }
-        $('.preview').html($('.preview').html().replace(/<u class="citation"[^<]+>/gi, ''));
+        $('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
+    } else if(type == 'header') {
+        
     } else {
         index = 0;
-        c = $('.preview').html();
+        c = $('.previewFullBody').html();
         for(i in citations) {
             var currentPos = c.substr(index);
             index = currentPos.indexOf('<u class="'+type+'"');
@@ -183,19 +185,82 @@ function format(type, style) {
             style = style.replace("PAGE", citations[i].page);*/
             //console.log(style, index, endtag);
             if(index > -1)
-                $('.preview').html($('.preview').html().substring(0,starttag)+string+$('.preview').html().substring(endtag));
+                $('.previewFullBody').html($('.previewFullBody').html().substring(0,starttag)+string+$('.previewFullBody').html().substring(endtag));
         }
-        $('.preview').html($('.preview').html().replace(/<u class="citation"[^<]+>/gi, ''));
+        $('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
     
     }
 }
-function finish() {
+function buildPages() {
     formatBibliography();
-    $('.preview').html($('.preview').html().toString().replace(/<p>/gi, '<p style="display:none">'));
-    $('.preview').html($('.preview').html().toString().replace('</p>', ' ', 'gi'));
-    $('.preview').append(b);
+    $('.previewFullBody').html($('.previewFullBody').html().toString().replace(/<p>/gi, '<p style="display:none">'));
+    $('.previewFullBody').html($('.previewFullBody').html().toString().replace('</p>', ' ', 'gi'));
+    $('.previewBibliography').html(b);
+    
+    /* * * PAGINATION * * */
+    $('.previewFullHeader').css('height', '0.5in');
+    var pixin = 2*$('#previewFullHeader').height();
+    var page = 9*pixin
+    var pages = Math.ceil($('.previewFullBody').height() / page);
+    pagea = new Array(); 
+    $('.previewPaginated').empty();
+    for(i=1;i<=pages+1;i++) {
+        pagea.push(i);
+        
+        $('.previewPaginated').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+'"></div>');
+        $('.previewPaginated').append('<div class="pageBody" id="pageBody'+i+'" style="height:'+9*i+'in;top:-'+9*(i-1)+'in;background-color:white;overflow:hidden;position:relative;z-index:'+(pages-i+2)+'"></div>');
+        $('.previewPaginated').append('<div class="pageFooter" id="pageFooter'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+'"></div><hr style="width:100%">');
+    } 
+    $('.pageBody').html($('.previewFullBody').html());
+    
+    $('.ui').css('z-index', pages+4);
+    //DO THE SAME THING FOR BIBLIOGRAPHY
+    var bpages = Math.ceil($('.previewBibliography').height() / page);
+    $('.previewBibliography').empty();
+    for(i=pages+1;i<=bpages+pages+1;i++) {
+        pagea.push(i);
+        
+        $('.previewBibliography').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+'"></div>')
+        $('.previewBibliography').append('<div class="pageBody" id="pageBody'+i+'" style="height:'+9*(i-pages)+'in;top:-'+9*(i-1-pages)+'in;background-color:white;overflow:hidden;position:relative;z-index:'+(pages-i+2)+'"></div>');
+        
+    }
+    
     
     //$('.preview.p').css('display', 'none');
+    
+    
+    /* * * PDF Output * * */
+            var pdf = new jsPDF('p','in','letter')
+
+        // source can be HTML-formatted string, or a reference
+        // to an actual DOM element from which the text will be scraped.
+        , source = $('.previewPaginated')[0]
+
+        // we support special element handlers. Register them with jQuery-style 
+        // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+        // There is no support for any other type of selectors 
+        // (class, of compound) at this time.
+        , specialElementHandlers = {
+                // element with id of "bypass" - jQuery style selector
+                'hr': function(element, renderer){
+                        // true = "handled elsewhere, bypass text extraction"
+                        return true
+                }
+        }
+
+        // all coords and widths are in jsPDF instance's declared units
+        // 'inches' in this case
+        pdf.fromHTML(
+                source // HTML string or DOM elem ref.
+                , 1 // x coord
+                , 0.5 // y coord
+                , {
+                        'width':6.5 // max width of content on PDF
+                        , 'elementHandlers': specialElementHandlers
+                }
+        )
+
+        pdf.save(o.title+'.pdf');
 }
 
 //bibliography

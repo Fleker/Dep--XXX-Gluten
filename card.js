@@ -108,11 +108,14 @@ function card(type, input) {
 
 
  	}
- 	if(type == 'phrase') {
+ 	else if(type == 'phrase') {
  	 	//
  	}
-        if(type == 'citation') {
+        else if(type == 'citation') {
             $('.cardBorder').css('border-color', '#0ff');
+        }
+        else if(type == 'character') {
+            //$('.cardBorder').css('border-color', '#000');
         }
  	var animate = '';
  	if(window.mouse.onY < 400 && false)

@@ -11,7 +11,7 @@ function input() {
 	block();
 	insert('content');
 
-	toolbarRow(['©haracter', 'Header', 'Citation', 'Image', 'Long Quote']);
+	toolbarRow(['Character', 'Header', 'Citation', 'Image', 'Long Quote']);
 	//quote('cite()');
 }         
 
@@ -44,8 +44,9 @@ function build(obj) {
             
         }
         //pagination([1, 1, 1, 1], [8.5, 11])
+        buildPages();
         format('citation', '(LAST PAGE)');
-        finish();
+        format('citation-main', '(PAGE)')
 }
 
 function parseWriting(text) {

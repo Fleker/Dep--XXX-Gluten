@@ -45,7 +45,8 @@ function output(text) {
 	$('.previewFullBody').append(text);
 }
 function center(text) {
-	$('.previewFullBody').append('<div class="center">'+text+'</div>');
+	//$('.previewFullBody').append('<div class="center">'+text+'</div>');
+        return '<div class="center">'+text+'</div>'
 }
 
 

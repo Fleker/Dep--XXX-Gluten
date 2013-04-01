@@ -27,7 +27,7 @@ function build(obj) {
 		newLine(1);
 	output(obj.due);
 		newLine(1);
-	center(obj.title);
+	output(center(obj.title));
 		//newLine();
         //for all in obj.content
 	output(obj.content);
@@ -43,6 +43,7 @@ function build(obj) {
         //pagination([1, 1, 1, 1], [8.5, 11])
         format('citation', '(LAST PAGE)');
         format('citation-main', '(PAGE)');
+        format('header', 'LAST PAGE', 'right');
         buildPages();
 }
 

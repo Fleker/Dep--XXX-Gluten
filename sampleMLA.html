@@ -168,7 +168,7 @@ function Popup(data)
         mywindow.document.write('<html><head><title>Printing '+o.title+'</title>');
         /*optional stylesheet*/ 
 			//mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
-			mywindow.document.write('<style>.center { text-align: center;	padding: 0px; font-size:12pt; font-family:Times; } hr{display:none;} body {word-wrap: break-word;margin-left: 1in;margin-right:-1in;margin-top:-0.08in;width:6in;</style>');
+			mywindow.document.write('<style>.center { text-align: center;	padding: 0px; font-size:12pt; font-family:Times; } .right{text-align:right;padding:0px;} hr{display:none;} body {word-wrap: break-word;margin-left: 1in;margin-right:-1in;margin-top:-0.08in;width:6in;</style>');
                         if(doubleSpaced == true) {
                             mywindow.document.write('<style>body { line-height: 2em; }</style>');
                         }
@@ -393,6 +393,10 @@ body {
 .center {
  	text-align: center;
  	padding: 0px;
+}
+.right {
+    text-align: right;
+    padding: 0px;
 }
 
 @media print {

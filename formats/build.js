@@ -154,7 +154,8 @@ function doubleSpace() {
    $('.previewPaginated').css('line-height', '2em');
    doubleSpaced = true;
 }
-function format(type, style) {
+headerstyle = '';
+function format(type, style, positioning) {
     if(type == 'citation' || type == 'citation-main') {
         index = 0;
         c = $('.previewFullBody').html();
@@ -172,7 +173,9 @@ function format(type, style) {
         if(type == 'citation-main')
             $('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
     } else if(type == 'header') {
-        
+        style = style.replace("LAST", o.author.lastname);
+        style = '<div class="'+positioning+'">'+style+'</div>';
+        headerstyle = style;
     } else {
         index = 0;
         c = $('.previewFullBody').html();
@@ -218,6 +221,10 @@ function buildPages() {
         $('.previewPaginated').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-top:0.5in;"></div>');
         $('.previewPaginated').append('<div class="pageBody" id="pageBody'+i+'" style="height:'+8.25*i+'in;top:-'+9*(i-1)+'in;background-color:white;overflow:hidden;position:relative;z-index:'+(pages-i+2)+'"></div>');
         $('.previewPaginated').append('<div class="pageFooter" id="pageFooter'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-bottom:0.5in;"></div><hr style="width:100%">');
+        var headerout = headerstyle.replace('PAGE', i);
+        //console.log(i-1 + ' ' + headerout);
+        var e = $('.pageHeader')[i-1];
+        $(e).html(headerout);
     } 
     $('.pageBody').html($('.previewFullBody').html());
     //$('.previewPaginated').append('<div class="previewBibliography page"></div>');
@@ -233,6 +240,11 @@ function buildPages() {
             $('.previewPaginated').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-top:0.5in;"></div>')
             $('.previewPaginated').append('<div class="bibBody" id="pageBody'+i+'" style="height:'+8.25*(i-pages)+'in;top:-'+9*(i-1-pages)+'in;background-color:white;overflow:hidden;position:relative;z-index:'+(pages-i+2)+'"></div>');
             $('.previewPaginated').append('<div class="bibFooter" id="pageFooter'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-bottom:0.5in;"></div><hr style="width:100%">');
+            
+            var headerout = headerstyle.replace('PAGE', i);
+            //console.log(i-1 + ' ' + headerout);
+            var e = $('.pageHeader')[i-1];
+            $(e).html(headerout);
         }
         $('.bibBody').html($('.previewBibliography').html());
         console.log($('.bibBody').html());

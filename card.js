@@ -123,7 +123,7 @@ function card(type, input) {
  	else if(window.innerHeight - window.mouse.onY > 500 && false )
  		animate = (window.mouse.onY - 400);
         else
-                animate = 100;
+                animate = 170;
 
  	$('.card').animate({
  	   	opacity: 1,

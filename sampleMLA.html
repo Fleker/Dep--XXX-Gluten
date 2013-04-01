@@ -4,8 +4,23 @@
 	<script src="formats/input.js"></script>
 	<script src="formats/build.js"></script>
         <script src="card.js"></script>
+        
         <script src="../jspdf/jspdf.js"></script>
         <script src="../jspdf/jspdf.plugin.from_html.js"></script>
+        <script src="../jspdf/libs/Blob.js/BlobBuilder.js"></script>
+        <script src="../jspdf/libs/FileSaver.js/FileSaver.js"></script>
+        
+        
+        <script type="text/javascript" src="../jspdf/libs/Deflate/adler32cs.js"></script>
+	<script type="text/javascript" src="../jspdf/libs/FileSaver.js/FileSaver.js"></script>
+	<script type="text/javascript" src="../jspdf/libs/Blob.js/BlobBuilder.js"></script>
+
+	<script type="text/javascript" src="../jspdf/jspdf.plugin.addimage.js"></script>
+
+	<script type="text/javascript" src="../jspdf/jspdf.plugin.standard_fonts_metrics.js"></script>
+	<script type="text/javascript" src="../jspdf/jspdf.plugin.split_text_to_size.js"></script>
+	<script type="text/javascript" src="../jspdf/jspdf.plugin.from_html.js"></script>
+        
         <script src="holoribbon/holoribbon.js"></script>
         
     <script src="formats/mla/format.js"></script>
@@ -34,7 +49,9 @@
        'File': new Array(
                {'text': 'Edit', 'img': '', 'action': 'convertToInput()'},
                {'text': 'View XML', 'img': '', 'action': 'convertToXML()'},
-               {'text': 'Preview', 'img': '', 'action': 'convertToPreview()'}
+               {'text': 'Preview', 'img': '', 'action': 'convertToPreview()'},
+               {'text': 'Download', 'img': '', 'action': "convertToPreview();pdf.save(o.title+'.pdf');"},
+               {'text': 'Print', 'img': '', 'action': 'print();'}
            
        ),
        'Options': new Array(
@@ -141,8 +158,9 @@ function convertToPreview() {
 
 /* * * PRINT * * */ /* IGNORE */
 function print() {
+        alert("Make sure you set the Print Margins to None before printing!");
 	convertToPreview();
-	Popup($('.preview').html());
+	Popup($('.previewPaginated').html());
 }
 function Popup(data)
     {
@@ -150,7 +168,7 @@ function Popup(data)
         mywindow.document.write('<html><head><title>Printing '+o.title+'</title>');
         /*optional stylesheet*/ 
 			//mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
-			mywindow.document.write('<style>.center { text-align: center;	padding: 0px; font-size:12pt; font-family:Times; }</style>');
+			mywindow.document.write('<style>.center { text-align: center;	padding: 0px; font-size:12pt; font-family:Times; } hr{display:none;} body {word-wrap: break-word;margin-left: 1in;margin-right:-1in;margin-top:-0.08in;width:6in;</style>');
                         if(doubleSpaced == true) {
                             mywindow.document.write('<style>body { line-height: 2em; }</style>');
                         }
@@ -158,9 +176,9 @@ function Popup(data)
         mywindow.document.write(data);
         mywindow.document.write('</body></html>');
 
-        mywindow.print();
+        /*mywindow.print();
         mywindow.close();
-
+        */
         return true;
     }
 
@@ -276,7 +294,7 @@ function getContent() {
     <div class="previewPaginated page"></div>
     <div class="previewBibliography page"></div>
     
-    <button onclick="demoFromHTML()">Download PDF</button>
+    <!--<button onclick="demoFromHTML()">Download PDF</button>-->
 </div>
 
 <div class="footer ui bg">
@@ -314,6 +332,9 @@ body {
  	background-color: white;
  	overflow-y: auto;
         margin-bottom: -192px;
+}
+.preview {
+    background-color: inherit;
 }
 .xmlx {
 	display: none;
@@ -460,7 +481,8 @@ u.citation {
     padding-bottom: 0.5in;
     *//*background-color: #eee;
     */margin-top: -0.08in;
-    margin-left: -0.08in;
+    margin-left: auto;
+    margin-right:auto;
 
     width:8.5in;
 }
@@ -468,6 +490,9 @@ u.citation {
     display:none;
 }
 .previewFullHeader {
+    display:none;
+}
+.previewBibliography {
     display:none;
 }
 </style>

@@ -20,13 +20,13 @@ function build(obj) {
         //output('<div style="line-height: 2em">');
         doubleSpace();
 	output(obj.author.firstname + ' ' + obj.author.lastname);
-		newLine();
+		newLine(1);
 	output(obj.class);
-		newLine();
+		newLine(1);
 	output(obj.teacher);
-		newLine();
+		newLine(1);
 	output(obj.due);
-		newLine();
+		newLine(1);
 	center(obj.title);
 		//newLine();
         //for all in obj.content
@@ -35,18 +35,15 @@ function build(obj) {
             if(obj.content[i].type == 'paragraph') {
                 output('&emsp;'+obj.content[i].value+'<br>');
             }
-            else if(obj.content[i].type == 'citation') {
-                
-            }
             else {
                 output('<br>'+obj.content[i].value);
             }
             
         }
         //pagination([1, 1, 1, 1], [8.5, 11])
-        buildPages();
         format('citation', '(LAST PAGE)');
-        format('citation-main', '(PAGE)')
+        format('citation-main', '(PAGE)');
+        buildPages();
 }
 
 function parseWriting(text) {
@@ -59,5 +56,4 @@ function formatBibliography() {
     for(i in citations) {
         bibliography('Book - Print', '<i>TITLE</i>', i);
     }
-    
 }

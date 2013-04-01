@@ -1,6 +1,7 @@
-var i = 0;
+var tagi = 0;
 var a = new Array();
 function insert(tag, placeholder, description) { 
+        console.log(tagi + ' tag:' + ' '+ tag);
 	if(placeholder == undefined) {
 		placeholder = '';
 	}
@@ -11,27 +12,33 @@ function insert(tag, placeholder, description) {
 
 	}
         else if(tag == 'author') {
-            $('.body').append('<input type="text" id="'+i+'" placeholder="First Name">&nbsp;&nbsp;<input type="text" id="'+i+'_2" placeholder="Last Name">')
+            $('.body').append('<input type="text" id="'+tagi+'" placeholder="First Name">&nbsp;&nbsp;<input type="text" id="'+tagi+'_2" placeholder="Last Name">')
         }
 	else if(tag == 'content') {
 		//$('.body').append('<textarea id="'+i+'">'+placeholder+'</textarea>');
-		$('.body').append('<div class="contentinput"><div class="toolbar bg"></div><div class="input" id="'+i+'"></div></div>');
+		$('.body').append('<div class="contentinput"><div class="toolbar bg"></div><div class="input" id="'+tagi+'"></div></div>');
 	}
 	else {
-		$('.body').append('<input type="text" id="'+i+'" placeholder="'+placeholder+'">');
+		$('.body').append('<input type="text" id="'+tagi+'" placeholder="'+placeholder+'">');
 	}
 	a.push(tag);
-	i++; 
+	tagi++; 
 	
 	$('.input').each(function(){
 	    this.contentEditable = true;
 	});
 }
-function block() {
-	$('.body').append('<br><br>');
+function block(b) {
+    if(b)
+	$('.previewFullBody').append('<br><br>');
+    else
+        $('#body').append('<br><br>');
 }
-function newLine() {
-	$('.body').append('<br>');
+function newLine(b) {
+    if(b)
+	$('.previewFullBody').append('<br>');
+    else
+        $('#body').append('<br>');
 }
 
 function output(text) {
@@ -117,7 +124,7 @@ function launchCitation(index, quote) {
         
         var title = '<input type="text" placeholder="Title" style="width: 30em" id="citeCardTitle">';
         var description = '<input type="text" style="width:35em" placeholder="If no official title, please describe" id="citeCardDescription">';
-        var bookpub = '<br>&emsp;<input type="text" placeholder="Page" style="width: 4em" id="citeCardPage">&nbsp;<input type="text" placeholder="Volume" style="width: 5em" id="citeCardVolume">&nbsp;<input type="text" placeholder="Edition" style="width: 6em" id="citeCardEdition">&nbsp;<input type="text" placeholder="Series" id="citeCardSeries">Main Title?<input type="checkbox" id="citeCardMain">';
+        var bookpub = '<br>&emsp;<input type="text" placeholder="Page" style="width: 4em" id="citeCardPage">&nbsp;<input type="text" placeholder="Volume" style="width: 5em" id="citeCardVolume">&nbsp;<input type="text" placeholder="Edition" style="width: 6em" id="citeCardEdition">&nbsp;<input type="text" placeholder="Series" id="citeCardSeries">Main Title?<input type="checkbox" id="citeCardMain" value="on">';
         var author = '<br>&emsp;Author: <input type="text" placeholder="First" id="citeCardFirst">&nbsp;<input type="text" placeholder="M" style="width: 2em" id="citeCardM">&nbsp;<input type="text" placeholder="Last" id="citeCardLast">';
         var publication = '<br>&emsp;Publication: <input type="text" placeholder="Publisher" id="citeCardPublisher">&nbsp;<input type="text" placeholder="City" id="citeCardCity">&nbsp;<input type="text" placeholder="Year" style="width: 4em" id="citeCardYear">';
         var website = '<br>&emsp;Website: <input type="text" placeholder="Website Title" id="citeCardWebsite">&nbsp;<input type="text" placeholder="Online Publisher" id="citeCardWebPublisher"><br>&emsp;&nbsp;<input placeholder="URL" id="citeCardUrl">';
@@ -166,7 +173,8 @@ function launchCitation(index, quote) {
             $('#citeCardVolume').val(citations[index].volume);
             $('#citeCardEdition').val(citations[index].edition);
             $('#citeCardSeries').val(citations[index].series);
-            $('#citeCardMain').val(citations[index].main);
+            document.getElementById('citeCardMain').checked = citations[index].main;
+                //$('#citeCardMain').val(citations[index].main);
             $('#citeCardFirst').val(citations[index].first);
             $('#citeCardM').val(citations[index].m);
             $('#citeCardLast').val(citations[index].last);
@@ -200,7 +208,7 @@ function citeSubmit() {
         'volume': $('#citeCardVolume').val(),
         'edition': $('#citeCardEdition').val(),
         'series': $('#citeCardSeries').val(),
-        'main': $('#citeCardMain').val(),
+        'main': $('#citeCardMain').prop('checked'),
         'first': $('#citeCardFirst').val(),
         'm': $('#citeCardM').val(),
         'last': $('#citeCardLast').val(),

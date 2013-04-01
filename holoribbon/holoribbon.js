@@ -41,18 +41,32 @@ function ribbonSwitch(index) {
     element = $('.ribbonstreameritem')[ribbonobj.index];
     $(element).css('border-bottom-style', 'none');
     element = $('.ribbongroup')[ribbonobj.index];
-    $(element).animate({
-        marginLeft: '-100%'
-    }, 300);
-    
+    if(ribbonobj.index < index) {
+        $(element).animate({
+            marginLeft: '-100%'
+        }, 300);
+    } else {
+        $(element).animate({
+            marginLeft: '100%'
+        }, 300);
+    }
+    var left = ribbonobj.index < index;    
     
     ribbonobj.index = index;
     element = $('.ribbonstreameritem')[index];
     $(element).css('border-bottom-style', 'solid');
     element = $('.ribbongroup')[index];
-    $(element).animate({
-        marginLeft: '25px'
-    }, 300);
+    if(left) {
+        $(element).css('margin-left', '100%');
+        $(element).animate({
+            marginLeft: '25px'
+        }, 300);
+    } else {
+        $(element).css('margin-left', '-100%');
+        $(element).animate({
+            marginLeft: '25px'
+        }, 300);
+    }
     
 }
 ribbonSwitch(0);

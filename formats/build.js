@@ -43,6 +43,7 @@ function parseContent(e) {
     return c;
 }
 function inputToJson() {
+    $('.previewFullBody').empty();
     o = {};
     for(i in a) {
         if(a[i] == 'content') {
@@ -165,10 +166,11 @@ function format(type, style) {
             style = style.replace("LAST", citations[i].last);
             style = style.replace("PAGE", citations[i].page);
             console.log(style, index, endtag);
-            if(index > -1 && ((citations[i].main.length != 2 && type == 'citation') || (citations[i].main.length == 2 && type == 'citation-main') ))
-                $('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+6)+' '+style+' '+$('.previewFullBody').html().substring(endtag+6));
+            if(index > -1 && ((citations[i].main != true && type == 'citation') || (citations[i].main == true && type == 'citation-main') ))
+                $('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+11)+' '+style+' '+$('.previewFullBody').html().substring(endtag+11));
         }
-        $('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
+        if(type == 'citation-main')
+            $('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
     } else if(type == 'header') {
         
     } else {
@@ -195,34 +197,45 @@ function buildPages() {
     formatBibliography();
     $('.previewFullBody').html($('.previewFullBody').html().toString().replace(/<p>/gi, '<p style="display:none">'));
     $('.previewFullBody').html($('.previewFullBody').html().toString().replace('</p>', ' ', 'gi'));
+    //console.log(b);
+    //console.log($('.previewBibliography').html());
     $('.previewBibliography').html(b);
+    console.log($('.previewBibliography').html());
     
     /* * * PAGINATION * * */
     $('.previewFullHeader').css('height', '0.5in');
     var pixin = 2*$('#previewFullHeader').height();
-    var page = 9*pixin
+    console.log('One inch is equal to '+pixin+' pixels.');
+    var page = 9*pixin;
     var pages = Math.ceil($('.previewFullBody').height() / page);
+    console.log('This body is equal to '+$('.previewFullBody').height() + ' pixels.');
+    console.log('The document will have a body of '+$('.previewFullBody').height() + ' / ' + page + ' = ' + pages + ' page(s).');
     pagea = new Array(); 
     $('.previewPaginated').empty();
-    for(i=1;i<=pages+1;i++) {
+    for(i=1;i<pages+1;i++) {
         pagea.push(i);
         
-        $('.previewPaginated').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+'"></div>');
-        $('.previewPaginated').append('<div class="pageBody" id="pageBody'+i+'" style="height:'+9*i+'in;top:-'+9*(i-1)+'in;background-color:white;overflow:hidden;position:relative;z-index:'+(pages-i+2)+'"></div>');
-        $('.previewPaginated').append('<div class="pageFooter" id="pageFooter'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+'"></div><hr style="width:100%">');
+        $('.previewPaginated').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-top:0.5in;"></div>');
+        $('.previewPaginated').append('<div class="pageBody" id="pageBody'+i+'" style="height:'+8.25*i+'in;top:-'+9*(i-1)+'in;background-color:white;overflow:hidden;position:relative;z-index:'+(pages-i+2)+'"></div>');
+        $('.previewPaginated').append('<div class="pageFooter" id="pageFooter'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-bottom:0.5in;"></div><hr style="width:100%">');
     } 
     $('.pageBody').html($('.previewFullBody').html());
+    //$('.previewPaginated').append('<div class="previewBibliography page"></div>');
     
     $('.ui').css('z-index', pages+4);
     //DO THE SAME THING FOR BIBLIOGRAPHY
-    var bpages = Math.ceil($('.previewBibliography').height() / page);
-    $('.previewBibliography').empty();
-    for(i=pages+1;i<=bpages+pages+1;i++) {
-        pagea.push(i);
-        
-        $('.previewBibliography').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+'"></div>')
-        $('.previewBibliography').append('<div class="pageBody" id="pageBody'+i+'" style="height:'+9*(i-pages)+'in;top:-'+9*(i-1-pages)+'in;background-color:white;overflow:hidden;position:relative;z-index:'+(pages-i+2)+'"></div>');
-        
+    if(citations.length) {
+        var bpages = Math.ceil($('.previewBibliography').height() / page);
+        //$('.previewBibliography').empty();
+        for(i=pages+1;i<bpages+pages+1;i++) {
+            pagea.push(i);
+
+            $('.previewPaginated').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-top:0.5in;"></div>')
+            $('.previewPaginated').append('<div class="bibBody" id="pageBody'+i+'" style="height:'+8.25*(i-pages)+'in;top:-'+9*(i-1-pages)+'in;background-color:white;overflow:hidden;position:relative;z-index:'+(pages-i+2)+'"></div>');
+            $('.previewPaginated').append('<div class="bibFooter" id="pageFooter'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-bottom:0.5in;"></div><hr style="width:100%">');
+        }
+        $('.bibBody').html($('.previewBibliography').html());
+        console.log($('.bibBody').html());
     }
     
     
@@ -260,21 +273,22 @@ function buildPages() {
                 }
         )
 
-        pdf.save(o.title+'.pdf');
+        
 }
 
 //bibliography
 function compare(a,b) {
-  if (a.last_nom < b.last)
+  if (a.last < b.last)
      return -1;
-  if (a.last_nom > b.last)
+  if (a.last > b.last)
     return 1;
   return 0;
 }
 
 b = '';
 function bibliographyTitle(text) {
-    b = b + '<div class="center">'+text+'</div>';    
+    citations.sort(compare);
+    b = '<div class="center">'+text+'</div>';    
 }
 function bibliography(type, style, i) {
     var cite = citations[i];

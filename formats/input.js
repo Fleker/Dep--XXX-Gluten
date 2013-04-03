@@ -68,14 +68,18 @@ function divInsert(type) {
     }
 }
 
-citations = new Array();
+//citations = new Array();
 function launchCitation(index, quote) {
     //$('.citation')[0].getAttribute('data-id')
+	if(citations == undefined) {
+		citations = new Array();
+		citations.length = 0;
+	}
     if(quote == undefined) {
         quote = '';        
     }
     if(index == undefined) {
-        cursorInsert('<u class="citation" data-id="'+citations.length+'" ondblclick="launchCitation('+citations.length+')">QUOTE</u>'+quote+'&nbsp;&nbsp;');
+        cursorInsert('<u class="citation" data-id="'+citations.length+'" ondblclick="launchCitation('+citations.length+')">QUOTE</u>'+quote+'. &nbsp;&nbsp;');
         index = citations.length;
     }
         //$('.citation').show();
@@ -174,7 +178,8 @@ function launchCitation(index, quote) {
             $('#citeCardVolume').val(citations[index].volume);
             $('#citeCardEdition').val(citations[index].edition);
             $('#citeCardSeries').val(citations[index].series);
-            document.getElementById('citeCardMain').checked = citations[index].main;
+			if(citations[index].main == true || citations[index].main == 'true')
+				document.getElementById('citeCardMain').checked = citations[index].main;
                 //$('#citeCardMain').val(citations[index].main);
             $('#citeCardFirst').val(citations[index].first);
             $('#citeCardM').val(citations[index].m);

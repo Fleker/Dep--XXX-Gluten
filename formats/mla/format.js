@@ -54,7 +54,7 @@ function parseWriting(text) {
 }
 function formatBibliography() {
     bibliographyTitle('Works Cited');
-    for(i in citations) {
+    for(i in citationsSort) {
         bibliography('Book - Print', '<i>TITLE</i>', i);
     }
 }

@@ -81,8 +81,6 @@ function inputToJson() {
         else
             o[a[i]] = $('#'+i).val();
     }
-    //completely unrelated, but, sort through citations now so they'll be ready by the time we get to bibliography
-    citations.sort(compare);
     
     return o;
 }
@@ -299,15 +297,169 @@ function compare(a,b) {
 
 b = '';
 function bibliographyTitle(text) {
-    citations.sort(compare);
+	citationsSort = citations;
+	citationsSort = citationsSort.sort(compare);
+	
     b = '<div class="center">'+text+'</div>';    
 }
 function bibliography(type, style, i) {
-    var cite = citations[i];
-    style = style.replace('TITLE', cite.title, 'g')
+    var cite = citationsSort[i];
+    style = style.replace('TITLE', cite.title, 'g');
      
     if(cite.type == type)
-        b = b + style;
-    
-    
+        b = b + style; 
 }
+doubleSpaced = false;
+citations = new Array();
+function save() {
+	$('.saveprogress').html('SAVING...');
+	
+	//var savefile = {'citations': new Array(), 'drafts': new Array(), 'options': {}, 'file': {}};
+	var savedata = {xml: {citations: new Array(), 'drafts': new Array(), 'options': {}, 'file': {}}};
+	var savefile = savedata.xml;
+	if(citations != undefined) {
+		for(i in citations) {
+			for(j in citations[i]) {
+				if(citations[i][j] == undefined) {
+					//console.log(citations[i][j]);
+					citations[i][j] = '';
+				}
+			}
+		}
+	}
+	if(citations != undefined)
+		savefile.citations = citations;
+	var draftval = inputToJson();
+	draftval.content = null;
+	draftval.lastedit = new Date().getTime();
+	//draftval.content = $('.input').html();
+	localStorage[docid+'.content'] = $('.input').html();
+	
+	//get docid.drafts
+	
+	if(savefile.drafts.length) {
+		savefile.drafts[savefile.drafts.length - 1].key = a;
+		savefile.drafts[savefile.drafts.length - 1].value = draftval;
+	} else {
+		//drafts function
+		savefile.drafts.push({});
+		savefile.drafts[0].key = a;
+		savefile.drafts[0].value = draftval;
+	}
+	
+	savefile.options.doubleSpaced = doubleSpaced;
+		savefile.options.wordcount = {'min': min, 'max': max};
+		
+	savefile.file.title = draftval.title;
+		savefile.file.format = $('#docformat').val();
+		savefile.file.tags = $('#doctags').val();
+		savefile.file.language = $('#doclang').val();
+		savefile.file.author = draftval.author.firstname + ' ' + draftval.author.lastname;
+		savefile.file.lastedit = new Date().getTime();
+		
+	savedata.xml = savefile;
+	
+	//finally, save the document.
+	//temp --
+	if(docid == undefined)
+		docid = "cxrsd19qa";
+	//turn savefile into XML
+	//window.savefile = savefile;
+	var savexml = json2xml(savedata)
+	localStorage[docid] = savexml;	
+	
+	//console.warn('Document saved. :)')
+	setTimeout("$('.saveprogress').html('');", 500);
+}
+//get i=...
+if(window.location.href.indexOf('&') > -1)
+	var end = window.location.href.indexOf('&');
+else 
+	var end = window.location.href.length;
+docid = window.location.href.substring(window.location.href.indexOf('?doc=') + 5, end);
+
+//TODO -- Allow for options to be embedded in the future.
+function restore(docid) {
+	//get savefile for this item
+	localjson = xml2json(parseXml(localStorage[docid]));
+		localjson = '{'+localjson.substring(11);
+		localjson = jQuery.parseJSON(localjson);
+	json = localjson;
+	
+	//first, preload the edit fields
+	if(localjson.xml.drafts.length == undefined || localjson.xml.drafts.length == 0) {
+		localjson = localjson.xml.drafts;
+	} else {
+		localjson = localjson.xml.drafts[localjson.xml.drafts.length - 1];
+	}
+	a = localjson.key;
+	for(i in a) {
+		//console.log(i + ' ' + a[i] + ' ' + localjson.value[a[i]])
+		if(a[i] == 'author') {
+			$('#'+i).val(localjson.value.author.firstname);
+			$('#'+i+'_2').val(localjson.value.author.lastname);
+		} else if(a[i] == 'content') {
+			/*if(localjson.value.content != undefined) {
+				if(localjson.value.content.length == undefined) {
+					out = json2xml(localjson.value.content.value);
+					//$('#'+i).html(json2xml(localjson.value.content.value));
+				} else {
+					var out = '';
+					for(i in localjson.value.content) {
+						out = out + json2xml(localjson.value.content[i].value + '<br>');
+					}
+				}
+				out = out.replace('<#text>', '', 'g');
+				$('#'+i).html(out);
+			}*/
+		$('#'+i).html(localStorage[docid+'.content']);
+		}
+		else {
+			$('#'+i).val(localjson.value[a[i]]);
+		}
+	}
+	
+	//citations
+	if(json.xml.citations.length == undefined) {
+		citations = new Array();
+		citations.push(json.xml.citations);
+	}
+	else {
+		citations = json.xml.citations;
+	}
+	
+	//options
+	doubleSpaced = json.xml.options.doubleSpaced;
+	$('#count_words_min').val(json.xml.options.wordcount.min);
+	$('#count_words_max').val(json.xml.options.wordcount.max);
+		//timer
+	
+	//file
+	$('#docformat').val(json.xml.file.format);
+	$('#doclang').val(json.xml.file.language);
+	$('#doctags').val(json.xml.file.tags);
+	
+}
+// TODO - Place ParseXML() into a script file
+function parseXml(xml) {
+				var dom = null;
+				if (window.DOMParser) {
+				   try { 
+					  dom = (new DOMParser()).parseFromString(xml, "text/xml"); 
+				   } 
+				   catch (e) { dom = null; }
+				}
+				else if (window.ActiveXObject) {
+				   try {
+					  dom = new ActiveXObject('Microsoft.XMLDOM');
+					  dom.async = false;
+					  if (!dom.loadXML(xml)) // parse error ..
+
+						 window.alert(dom.parseError.reason + dom.parseError.srcText);
+				   } 
+				   catch (e) { dom = null; }
+				}
+				else
+				   alert("cannot parse xml string!");
+				return dom;
+			 }

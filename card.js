@@ -32,6 +32,7 @@ function hideCard() {
             $('.cardBorder').html('<div class="cardHead"></div>');
             cardActive = false;
     });
+	save();
 }    
 //courtesy of Steve Harrison -- http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript
 function capitalizeFirstLetter(string)

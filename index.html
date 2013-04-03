@@ -1,0 +1,213 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		
+		<script src="json2xml.js"></script>
+		<script src="xml2json.js"></script>
+		
+		<script src="holoribbon/holoribbon.js"></script>
+	</head>
+	<body>
+		<div class="header ui"></div>
+			<script>
+    newRibbon('.header', {
+       'New': new Array(
+			   {'text': 'Document', 'img': '', 'action': 'newDoc();'},
+			   {'text': 'Folder', 'img': '', 'action': "alert('Not supported yet')"},
+               {'text': 'Form', 'img': '', 'action': "alert('Not supported yet')"}
+       ), 
+	   'Search': new Array(
+			   {'group': 'Search', 'value': '<input type="search" id="searchBar" oninput="startSearch()" placeholder="Search terms here">'}
+	   )    
+    });
+    ribbonSwitch(1);
+	
+</script>
+<style>
+    .ribbonhead {
+        width:100%;
+        margin-left:5px;
+        margin-top:5px;
+    }
+    .ribbonheader {
+        width: 150px;
+        text-align: center;
+    }
+    .ribbonstreamer {
+        width:100%;
+        margin-left:5px;
+        height:5px;
+        margin-top:-22px;
+        /*background-color:#0066cc;
+    */}
+    .ribbonstreameritem {
+        width:150px;
+        height:5px;
+        /*border-bottom-style:solid;*/
+        border-bottom-color:#06c;
+        /*background-color:#06c;*/
+    }
+    .ribbonbutton {
+        width: 80px;
+        height: 60px;
+        padding-right: 35px;
+        /*background-color: rgba(0,0,0,.1);*/
+    }
+    .ribbongroup {
+        margin-left:-100%;
+        position: fixed;
+        top: 40px;
+    }
+    .ribbonbody {
+        position:fixed;
+    }
+    
+</style>
+		<table class="body">
+			<tr><td>
+					
+				</td>
+			<td class="filelist">
+
+			</td>
+		</table>
+		<script>
+			$('.filelist').empty();
+			function compare(a,b) {
+				if (a.e < b.e)
+				   return 1;
+				if (a.e > b.e)
+				  return -1;
+				return 0;
+			  }
+			  
+			var docs = new Array();
+			for(i in localStorage) {
+				if(i != 'profile' && i.indexOf('.content') == -1) {
+					//console.log(i);
+					localjson = xml2json(parseXml(localStorage[i]));
+					localjson = '{'+localjson.substring(11);
+					localjson = jQuery.parseJSON(localjson);
+
+					docs.push({id: i, e: localjson.xml.file.lastedit});
+				}
+			}
+			docs.sort(compare)  
+			for(i in docs) {
+				console.log(docs[i])
+				localjson = xml2json(parseXml(localStorage[docs[i].id]));
+				localjson = '{'+localjson.substring(11);
+				localjson = jQuery.parseJSON(localjson);
+				var date = new Date();
+				$('.filelist').append('<div class="file" onclick="loadDoc(\''+docs[i].id+'\')"><table><tr><td style="width:150px;"><img style="overflow:hidden" src="http://placehold.it/120x140&text='+localjson.xml.file.format+'"></td><td><span class="filetitle"><b>'+localjson.xml.file.title+'</b></span><br><span class="fileauthor"><i>'+localjson.xml.file.author+'</i><br><span class="fileauthor fileedit">Last edit: '+duration(Math.ceil((date.getTime() - localjson.xml.file.lastedit)/1000))+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>'+localjson.xml.file.language+'</i></span></td></tr></table></div>');
+		
+			}	
+			
+			function parseXml(xml) {
+				var dom = null;
+				if (window.DOMParser) {
+				   try { 
+					  dom = (new DOMParser()).parseFromString(xml, "text/xml"); 
+				   } 
+				   catch (e) { dom = null; }
+				}
+				else if (window.ActiveXObject) {
+				   try {
+					  dom = new ActiveXObject('Microsoft.XMLDOM');
+					  dom.async = false;
+					  if (!dom.loadXML(xml)) // parse error ..
+
+						 window.alert(dom.parseError.reason + dom.parseError.srcText);
+				   } 
+				   catch (e) { dom = null; }
+				}
+				else
+				   alert("cannot parse xml string!");
+				return dom;
+			 }
+			 function loadDoc(docid) {
+				 window.location = 'edit.php?doc='+docid;
+			 }
+			 function newDoc() {
+				//assign it an id
+				var docid = parseInt(Math.random()*1000000000000000).toString(36);
+				while(localStorage[docid] != undefined) {
+					console.log('Testing docid: '+docid);
+					docid = parseInt(Math.random()*1000000000000000).toString(36);
+				}
+				console.log('Creating document '+docid);
+				var xml = {'xml': {}};
+				localStorage[docid] = json2xml(xml);
+				loadDoc(docid);
+			 }
+			 function duration(seconds) {
+				 if(seconds < 60) {
+					 return seconds+' seconds ago'
+				 } else if(seconds < 60*60) {
+					 return Math.ceil(seconds/60)+' minutes ago'
+				 } else if(seconds < 60*60*36) {
+					 return Math.ceil(seconds/60/60)+' hours ago'
+				 } else if(seconds < 60*60*24*7*10) {
+					 return Math.ceil(seconds/60/60/24)+ ' days ago'
+				 } else if(seconds < 60*60*24*7*35) {
+					 return Math.ceil(seconds/60/60/24/7)+ ' weeks ago'
+				 } else {
+					 return 'a while ago'
+				 }
+			 }
+		</script>
+		<style>
+			.file {
+				background-color: #eee;
+				width: 90%;
+				margin-left: 40px;
+				padding-left: 12px;
+				padding-bottom: 12px;
+				border: solid 1px;
+				padding-top: 5px;
+			}
+			.filetitle {
+				width: 50%
+				font-size:13pt;
+			}
+			.fileauthor {
+				width: 20%;
+				margin-left: 40px;
+			}
+			.fileedit {
+				font-size: 10pt;
+			}
+			
+body {
+ 	background-color: #ddd;
+}
+.ui {
+ 	width:101%;
+ 	margin-left:-1%;
+ 	padding-left:1%;
+}
+.bg {
+	background-color: #ddd;
+}
+.header {
+	position:fixed;
+	top:0%;
+	height:160px;
+}
+.body {
+ 	margin-top:160px;
+ 	background-color: white;
+ 	overflow-y: auto;
+        margin-bottom: -192px;
+		width:100%;
+}
+		</style>
+	</body>
+</html>

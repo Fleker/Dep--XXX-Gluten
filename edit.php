@@ -1,6 +1,9 @@
 <html>
 <head>
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script src="json2xml.js"></script>
+	<script src="xml2json.js"></script>	
+		
 	<script src="formats/input.js"></script>
 	<script src="formats/build.js"></script>
         <script src="card.js"></script>
@@ -21,8 +24,6 @@
 	<script type="text/javascript" src="../jspdf/jspdf.plugin.split_text_to_size.js"></script>
 	<script type="text/javascript" src="../jspdf/jspdf.plugin.from_html.js"></script>
 	
-	<script src="json2xml.js"></script>
-	<script src="xml2json.js"></script>
         <script src="holoribbon/holoribbon.js"></script>
         
     <script src="formats/mla/format.js"></script>
@@ -49,20 +50,28 @@
 <script>
     newRibbon('.header', {
        'File': new Array(
-               {'text': 'Edit', 'img': '', 'action': 'convertToInput()'},
-               {'text': 'View XML', 'img': '', 'action': 'convertToXML()'},
-               {'text': 'Preview', 'img': '', 'action': 'convertToPreview()'},
-               {'text': 'Download', 'img': '', 'action': "convertToPreview();pdf.save(o.title+'.pdf');"},
-               {'text': 'Print', 'img': '', 'action': 'print();'}
+			   {'text': 'Back', 'img': '', 'action': 'returnHome();'},
+               {'text': 'Download', 'img': '', 'action': "convertToPreview();pdf.save(o.title+'.pdf');"}
            
        ),
+	   'View': new Array(
+			   {'text': 'Edit', 'img': '', 'action': 'convertToInput()'},
+               {'text': 'View XML', 'img': '', 'action': 'convertToXML()'},
+			   {'text': 'Preview', 'img': '', 'action': 'convertToPreview()'},
+			   {'text': 'Print', 'img': '', 'action': 'print();'}
+
+		),
        'Options': new Array(
                 {'group': 'Words', 'value': 'Min: <input type="number" id="count_words_min" value="0" oninput="wordCount()" min="0" class="countinput"><br>Max: <input type="number" id="count_words_max" value="0" oninput="wordCount()" min="0" class="countinput">'},
                 {'group': 'Timer', 'value': 'Minutes: <input type="number" id="timer_minutes" value="0" min="0">'}
            
        )       
     });
-    ribbonSwitch(1);
+    ribbonSwitch(2);
+	
+	function returnHome() {
+		window.location = 'index.html'
+	}
 </script>
 <style>
     .ribbonhead {
@@ -110,15 +119,19 @@
 <br>
 <input type="text" value="MLA - Essay" disabled="disabled" id="docformat">&nbsp;&nbsp;Language:<input size="8" list="languages" type="text" value="en_us" placeholder="Language" id="doclang"> 
 <br>
-Tags: <input type="text" placeholder="Space-Separated Tags" id="doctags" size="40">
-<br><br>
-<script>
-input();
-</script>
 <datalist id="languages">
 	<option value="en_us" label="English (US)">
 	<option value="es" label="Spanish">
 </datalist>
+
+
+Tags: <input type="text" placeholder="Space-Separated Tags" id="doctags" size="40">
+<br><br>
+<script>
+input();
+restore(docid);
+</script>
+
 <div class="citation">
         
 </div>
@@ -309,18 +322,23 @@ function getContent() {
     <!--<button onclick="demoFromHTML()">Download PDF</button>-->
 </div>
 
-<div class="footer ui bg">
-	<div class="count_words">
-		<div class="count_words_bar"></div>
-		<div class="count_words_number"></div>
-	</div>
-	<div class="count_paragraphs">
+<table class="footer ui bg">
+	<tr><td class="count_words">
+		<table style="width:100px"><tr>
+		<td class="count_words_bar"></td><td style="width:100%"></td></tr></table>
+		<span class="count_words_number"></span>
+	</td>
+	<td class="count_paragraphs">
 	
-	</div>
-	<div class="timer">
-		<div class="timer_txt"></div>
-	</div>
-</div>
+	</td>
+	<td class="timer">
+		<!--<div class="timer_txt"></div>-->
+	</td>
+	<td class="saveprogress">
+			
+	</td>
+	<td style="width:100%">&nbsp;</td></tr>
+</table>
 
 <style>
 body {
@@ -510,6 +528,9 @@ u.citation {
 }
 .previewBibliography {
     display:none;
+}
+.saveprogress {
+	font-size: 10pt;
 }
 </style>
 </html>

@@ -1,4 +1,5 @@
 function input() {
+	startInput();
 	insert('title', 'Title');
 	newLine();
 	insert('author', null, 'Please type your name.');
@@ -11,7 +12,7 @@ function input() {
 	block();
 	insert('content');
 
-	toolbarRow(['Character', 'Header', 'Citation', 'Image', 'Long Quote']);
+	toolbarRow(['Character', 'Citation', 'Image', 'Long Quote']);
 	//quote('cite()');
 }         
 

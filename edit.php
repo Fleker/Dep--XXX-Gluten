@@ -26,7 +26,7 @@
 	
         <script src="holoribbon/holoribbon.js"></script>
         
-    <script src="formats/mla/format.js"></script>
+    <!--<script src="formats/mla/format.js"></script>-->
 </head>
 <div class="header ui bg">
 	<u onclick="convertToInput();">Back to Editor</u>
@@ -114,11 +114,12 @@
     
 </style>
 
-<div class="body" id="body">
+<div class="body">
 <i>What kind of document do you wish to create?</i>
 <br>
-<input type="text" value="MLA - Essay" disabled="disabled" id="docformat">&nbsp;&nbsp;Language:<input size="8" list="languages" type="text" value="en_us" placeholder="Language" id="doclang"> 
+<input type="text" value="MLA" id="docformat" list="formats">&nbsp;&nbsp;Language:<input size="8" list="languages" type="text" value="en_us" placeholder="Language" id="doclang"> 
 <br>
+
 <datalist id="languages">
 	<option value="en_us" label="English (US)">
 	<option value="es" label="Spanish">
@@ -127,13 +128,86 @@
 
 Tags: <input type="text" placeholder="Space-Separated Tags" id="doctags" size="40">
 <br><br>
+
 <script>
-input();
+//in the future dynamically build list.
+formatlist = new Array('MLA', 'APA');
+formatlistlabel = new Array('Essay', 'Essay');
+document.write('<datalist id="formats">')
+for(i in formatlist) {
+	document.write('<option value="'+formatlist[i]+'" label="'+formatlistlabel[i]+'">');
+}
+document.write('</datalist>');
+
+	
+$("#docformat").bind("input contextmenu invalid", function(event) {
+        formatShift();
+});
+function createjscssfile(filename, filetype){
+ if (filetype=="js"){ //if filename is a external JavaScript file
+  var fileref=document.createElement('script')
+  fileref.setAttribute("type","text/javascript")
+  fileref.setAttribute("src", filename)
+ }
+ else if (filetype=="css"){ //if filename is an external CSS file
+  var fileref=document.createElement("link")
+  fileref.setAttribute("rel", "stylesheet")
+  fileref.setAttribute("type", "text/css")
+  fileref.setAttribute("href", filename)
+ }
+ return fileref
+}
+
+function replacejscssfile(oldfilename, newfilename, filetype){
+ var targetelement=(filetype=="js")? "script" : (filetype=="css")? "link" : "none" //determine element type to create nodelist using
+ var targetattr=(filetype=="js")? "src" : (filetype=="css")? "href" : "none" //determine corresponding attribute to test for
+ var allsuspects=document.getElementsByTagName(targetelement)
+ for (var i=allsuspects.length; i>=0; i--){ //search backwards within nodelist for matching elements to remove
+  if (allsuspects[i] && allsuspects[i].getAttribute(targetattr)!=null && allsuspects[i].getAttribute(targetattr).indexOf(oldfilename)!=-1){
+   var newelement=createjscssfile(newfilename, filetype)
+   allsuspects[i].parentNode.replaceChild(newelement, allsuspects[i])
+  }
+ }
+}
+function loadjscssfile(filename, filetype){
+ if (filetype=="js"){ //if filename is a external JavaScript file
+  var fileref=document.createElement('script')
+  fileref.setAttribute("type","text/javascript");
+  fileref.setAttribute("src", filename);
+ }
+ else if (filetype=="css"){ //if filename is an external CSS file
+  var fileref=document.createElement("link")
+  fileref.setAttribute("rel", "stylesheet");
+  fileref.setAttribute("type", "text/css");
+  fileref.setAttribute("href", filename);
+ }
+ if (typeof fileref!="undefined")
+  document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+
+var filesadded="" //list of files already added
+
+function checkloadjscssfile(filename, filetype){
+ if (filesadded.indexOf("["+filename+"]")==-1){
+  loadjscssfile(filename, filetype)
+  filesadded+="["+filename+"]" //add to list of files already added, in the form of "[filename1],[filename2],etc"
+ }
+ else
+  alert("file already added!")
+}
+//format = 'mla';
+function formatShift() {
+	//unload js file
+	format2 = $('#docformat').val();
+	if(formatlist.indexOf(format2) > -1) {
+		replacejscssfile('formats/'+docformat+'/format.js', 'formats/'+format2+'/format.js', 'js');
+		docformat = format2;
+		setTimeout("save();$('#body').empty();input();save();", 500);
+	}
+}
 restore(docid);
 </script>
-
-<div class="citation">
-        
+<div id="body">       
 </div>
 </div>
 
@@ -214,7 +288,9 @@ window.onload = function() {
 			c = getContent();
 			if(c.split(' ').length < 800) {
 				wordCount();
-				save();
+				if(formatlist.indexOf(format2) > -1) {
+					save();
+				}
             }
 		}
 		if(k == 32) {
@@ -222,7 +298,9 @@ window.onload = function() {
          	c = getContent();
 			if(c.split(' ').length >= 800) {
 				wordCount();
-                save();
+                if(formatlist.indexOf(format2) > -1) {
+					save();
+				}
 			}
 		}
                 if(k == 222) {
@@ -316,6 +394,7 @@ function getContent() {
     <div class="previewFullBody"></div>
     
     <div class="previewCover page"></div>
+	<div class="previewAbstract page"></div>
     <div class="previewPaginated page"></div>
     <div class="previewBibliography page"></div>
     

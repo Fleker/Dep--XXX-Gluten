@@ -1,25 +1,29 @@
-var tagi = 0;
-var a = new Array();
+function startInput() {
+	tagi = 0;
+	a = new Array();
+}
 function insert(tag, placeholder, description) { 
         console.log(tagi + ' tag:' + ' '+ tag);
 	if(placeholder == undefined) {
 		placeholder = '';
 	}
 	if(description != undefined) {
-		$('.body').append('<span class="description">'+description+'</span><br>');
+		$('#body').append('<span class="description">'+description+'</span><br>');
 	}
 	if(tag == 'date') {
 
 	}
         else if(tag == 'author') {
-            $('.body').append('<input type="text" id="'+tagi+'" placeholder="First Name">&nbsp;&nbsp;<input type="text" id="'+tagi+'_2" placeholder="Last Name">')
+            $('#body').append('<input type="text" id="'+tagi+'" placeholder="First Name">&nbsp;&nbsp;<input type="text" id="'+tagi+'_2" placeholder="Last Name">')
         }
 	else if(tag == 'content') {
 		//$('.body').append('<textarea id="'+i+'">'+placeholder+'</textarea>');
-		$('.body').append('<div class="contentinput"><div class="toolbar bg"></div><div class="input" id="'+tagi+'"></div></div>');
+		$('#body').append('<div class="contentinput"><div class="toolbar bg"></div><div class="input" id="'+tagi+'"></div></div>');
+	} else if(tag == 'abstract') {
+		$('#body').append('<textarea id="'+tagi+'"></textarea>');
 	}
 	else {
-		$('.body').append('<input type="text" id="'+tagi+'" placeholder="'+placeholder+'">');
+		$('#body').append('<input type="text" id="'+tagi+'" placeholder="'+placeholder+'">');
 	}
 	a.push(tag);
 	tagi++; 
@@ -29,14 +33,22 @@ function insert(tag, placeholder, description) {
 	});
 }
 function block(b) {
-    if(b)
-	$('.previewFullBody').append('<br><br>');
+    if(b == 1)
+		$('.previewFullBody').append('<br><br>');
+	else if(b == 2)
+		$('.previewCover').append('<br><br>');
+	else if(b == 3)
+		$('.previewAbstract').append('<br><br>');
     else
         $('#body').append('<br><br>');
 }
 function newLine(b) {
-    if(b)
-	$('.previewFullBody').append('<br>');
+    if(b == 1)
+		$('.previewFullBody').append('<br>');
+	else if(b == 2)
+		$('.previewCover').append('<br>');
+	else if(b == 3)
+		$('.previewAbstract').append('<br>');
     else
         $('#body').append('<br>');
 }
@@ -47,6 +59,12 @@ function output(text) {
 function center(text) {
 	//$('.previewFullBody').append('<div class="center">'+text+'</div>');
         return '<div class="center">'+text+'</div>'
+}
+function coverOutput(text) {
+	$('.previewCover').append(text);
+}
+function abstractOutput(text) {
+	$('.previewAbstract').append(text);
 }
 
 
@@ -60,12 +78,15 @@ function openTab(url) {
 	window.open(url, '_blank');
   	window.focus();
 }
-function divInsert(type) {   
+function divInsert(type) {  
+	type = type.replace(' ', '', 'g');
     if(type == 'Citation') {
         launchCitation();
     } else if(type == 'Character') {
         openTab('http://copypastecharacter.com/classic');
-    }
+    } else {
+		cursorInsert('<u class="'+type+'">'+type.toUpperCase()+'</u>&nbsp;');
+	}
 }
 
 //citations = new Array();
@@ -137,7 +158,8 @@ function launchCitation(index, quote) {
         var accdate = '<br>&emsp;&emsp;Accessed on: <input type="date" value='+today+' id="citeCardAccessed">';
         var database = '<br>&emsp;Database: <input placeholder="Database Name" id="citeCardDatabase">&nbsp;<input type="url" placeholder="url" style="width: 30em" id="citeCardDUrl">';
         var medium = '<br>&emsp;<input placeholder="Medium" id="citeCardMedium">';
-              
+        var abstract = '<br>&emsp;Type a summary of this work.<br><textarea></textarea>';
+				
         z = $('.citelist').val();
         if(z == 'Book - Print') {
             $('.citecard').html('\n\
@@ -204,6 +226,10 @@ function citeCard(cardCiteActive) {
     cardCiteActive = true;
 }
 function citeCardOK() {
+	var abstract = '<br>&emsp;Type a summary of this work.<br><textarea></textarea>';
+		
+	if(citationAbstract)
+		$('.citecard').append(abstract);
     $('.citecard').append('<br><button onclick="hideCard();citeSubmit();">Add Citation</button>');    
 }
 function citeSubmit() {
@@ -276,6 +302,10 @@ function cursorInsert(text) {
     console.log(cursorPos());
     //var p = cursorPos();
     var p = window.cursorposition;
+	if(p == undefined)
+		p = $('.input').html().length;
+	if(p == undefined)
+		p = 0;
     console.log(p);
     console.log($('.input').html().substring(0,p) + text + $('.input').html().substring(p));
     $('.input').html($('.input').html().substring(0,p) + text + $('.input').html().substring(p));

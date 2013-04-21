@@ -163,49 +163,67 @@ function format(type, style, positioning) {
         index = 0;
         c = $('.previewFullBody').html();
         for(i in citations) {
-            var currentPos = c.substr(index);
-            index = currentPos.indexOf('<u class="citation"');
-            //currentPos.substring(index, currentPos.indexOf('>'));
-            endtag = currentPos.indexOf('</u>');
-			
-            style = style.replace("LAST", citations[i].last);
-            style = style.replace("PAGE", citations[i].page);
-			style = style.replace("YEAR", citations[i].year);
-			
-            console.log(style, index, endtag);
-            if(index > -1 && ((citations[i].main != true && type == 'citation') || (citations[i].main == true && type == 'citation-main') ))
-                $('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+11)+' '+style+' '+$('.previewFullBody').html().substring(endtag+11));
-        }
+			if(citations[i] != undefined) {
+				var currentPos = c.substr(index);
+				index = currentPos.indexOf('<u class="citation"');
+				//currentPos.substring(index, currentPos.indexOf('>'));
+				endtag = currentPos.indexOf('</u>');
+
+				style = style.replace("LAST", citations[i].last);
+				style = style.replace("PAGE", citations[i].page);
+				style = style.replace("YEAR", citations[i].year);
+
+				console.log(style, index, endtag);
+				if(index > -1 && ((citations[i].main != true && type == 'citation') || (citations[i].main == true && type == 'citation-main') ))
+					$('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+11)+' '+style+' '+$('.previewFullBody').html().substring(endtag+11));
+			}
+		}
         if(type == 'citation-main')
             $('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
     } else if(type == 'header' || type == 'cover-header' || type == 'abstract-header') {
         style = style.replace("LAST", o.author.lastname);
-		style = style.replace("RUNNINGHEAD", o.runninghead.toUpperCase());
+		if(o.runninghead != undefined)
+			style = style.replace("RUNNINGHEAD", o.runninghead.toUpperCase());
 		
-        if(style.indexOf(':') > -1)
+        if(style.indexOf(':') == -1)
 			style = '<div class="'+positioning+'">'+style+'</div>';
 		else {
+			style = style.replace(':left', ';left', 'gi');
+			style = style.replace(':center', ';center', 'gi');
+			style = style.replace(':right', ';right', 'gi');
 			var styleout = '<table><tr>';
 			var start = 0;
-			if(style.indexOf(':left')) {
-				styleout = styleout + '<td style="text-align:left">'+style.substring(0, style.indexOf(':left'))+'</td>';
-				start = style.indexOf(':left') + 6;
+			if(style.indexOf(';left') > -1) {
+				styleout = styleout + '<td style="text-align:left;width:100%">'+style.substring(0, style.indexOf(';left'))+'</td>';
+				start = style.indexOf(';left') + 6;
 			}
-			if(style.indexOf(':center')) {
-				styleout = styleout + '<td style="text-align:center">'+style.substring(start, style.indexOf(':center'))+'</td>';
-				start = style.indexOf(':center') + 8;
+			if(style.indexOf(';center') > -1) {
+				styleout = styleout + '<td style="text-align:center;width:100%">'+style.substring(start, style.indexOf(';center'))+'</td>';
+				start = style.indexOf(';center') + 8;
 			}
-			if(style.indexOf(':right')) {
-				styleout = styleout + '<td style="text-align:right">'+style.substring(start, style.indexOf(':right'))+'</td>';
+			if(style.indexOf(';right') > -1) {
+				styleout = styleout + '<td style="text-align:right;width:100%">'+style.substring(start, style.indexOf(';right'))+'</td>';
 				//start = style.indexOf(':center') + 8;
 			}
+			styleout = styleout + '</tr></table>';
+			style = styleout;
+			style = style.replace(';left', '', 'gi');
+			style = style.replace(';right', '', 'gi');
+			style = style.replace(';center', '', 'gi');
 		}
 		if(type == 'header')
 	        headerstyle = style;
-		else if(type == 'cover-header')
-			$('.previewCover').append('<div class="pageHeader" data-page="'+1+'" id="pageHeader'+1+'" style="height:0.5in;background-color:white;position:relative;z-index:'+99+';padding-top:0.5in;"></div>');
-		else if(type == 'abstract-header')
-			$('.previewCover').append('<div class="pageHeader" data-page="'+2+'" id="pageHeader'+2+'" style="height:0.5in;background-color:white;position:relative;z-index:'+98+';padding-top:0.5in;"></div>');
+		else if(type == 'cover-header') {
+			$('.previewCover').append('<div class="pageHeader coverHeader" data-page="'+1+'" id="pageHeader'+1+'" style=""></div>');
+			$('.previewCover').append('<div class="pageBody coverBody" id="pageBody'+1+'" style="height:'+8.25*1+'in;top:-'+9*(1-1)+'in;"></div>');
+			$('.previewCover').append('<div class="pageFooter coverFooter" id="pageFooter'+1+'" style=""></div><hr style="width:100%">');
+        
+		}
+		else if(type == 'abstract-header') {
+			$('.previewAbstract').append('<div class="pageHeader abstractHeader" data-page="'+2+'" id="pageHeader'+2+'" style=""></div>');
+			$('.previewAbstract').append('<div class="pageBody abstractBody" id="pageBody'+2+'" style="height:'+8.25*1+'in;margin-top:-'+9*(2-2)+'in;"></div>');
+			$('.previewAbstract').append('<div class="pageFooter abstractFooter" id="pageFooter'+2+'" style=""></div><hr style="width:100%">');
+		}
 	} else if(type == 'heading-1') {
 		//**			
 	} else {
@@ -224,7 +242,7 @@ function format(type, style, positioning) {
             if(index > -1)
                 $('.previewFullBody').html($('.previewFullBody').html().substring(0,starttag)+string+$('.previewFullBody').html().substring(endtag));
         }
-        $('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
+        $('.previewFullBody').html($('.previewFullBody').html().replace('<u class="'+type+'"[^<]+>', '', 'gi'));
     
     }
 }
@@ -237,8 +255,8 @@ function buildPages() {
     $('.previewBibliography').html(b);
     console.log($('.previewBibliography').html());
 	
-	coverPage();
-	abstractPage();
+	try{ coverPage() } catch(err) { }
+	try{ abstractPage() } catch(err) { }
     
     /* * * PAGINATION * * */
     $('.previewFullHeader').css('height', '0.5in');
@@ -255,40 +273,44 @@ function buildPages() {
 		j++;
 	if($('.previewAbstract').html().length > 0)
 		j++;
-    for(i=j;i<pages+j;i++) {
-        pagea.push(i);
+    //for(i=j;i<pages+j;i++) {
+    for(i=1;i<=pages;i++) {    
+		pagea.push(i);
         
-        $('.previewPaginated').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-top:0.5in;"></div>');
-        $('.previewPaginated').append('<div class="pageBody" id="pageBody'+i+'" style="height:'+8.25*i+'in;top:-'+9*(i-1)+'in;background-color:white;overflow:hidden;position:relative;z-index:'+(pages-i+2)+'"></div>');
-        $('.previewPaginated').append('<div class="pageFooter" id="pageFooter'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-bottom:0.5in;"></div><hr style="width:100%">');
-        var headerout = headerstyle.replace('PAGE', i);
+        $('.previewPaginated').append('<div class="pageHeader bodyHeader" data-page="'+i+'" id="pageHeader'+i+'" style="z-index:'+(pages-i+3)+';"></div>');
+        $('.previewPaginated').append('<div class="pageBody bodyBody" id="pageBody'+i+'" style="height:'+8.25*i+'in;margin-top:-'+9*(i-1)+'in;z-index:'+(pages-i+2)+';"></div>');
+        $('.previewPaginated').append('<div class="pageFooter bodyFooter" id="pageFooter'+i+'" style="z-index:'+(pages-i+3)+';"></div><hr style="width:100%">');
+        var headerout = headerstyle.replace('PAGE', i+j);
         //console.log(i-1 + ' ' + headerout);
-        var e = $('.pageHeader')[i-1];
-        $(e).html(headerout);
     } 
-    $('.pageBody').html($('.previewFullBody').html());
+    $('.bodyBody').html($('.previewFullBody').html());
     //$('.previewPaginated').append('<div class="previewBibliography page"></div>');
     
-    $('.ui').css('z-index', pages+4);
-    //DO THE SAME THING FOR BIBLIOGRAPHY
-    if(citations.length) {
+    $('.ui').css('z-index', pages+6);
+	$('.previewCover').css('z-index', pages+5);
+	$('.previewAbstract').css('z-index', pages+5);
+	//^DO AS ABOVE FOR COVER AND ABSTRACT;
+	
+//DO THE SAME THING FOR BIBLIOGRAPHY
+    if(citations.length && citations[0] != undefined) {
         var bpages = Math.ceil($('.previewBibliography').height() / page);
         //$('.previewBibliography').empty();
         for(i=pages+j;i<bpages+pages+j;i++) {
             pagea.push(i);
-
-            $('.previewPaginated').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-top:0.5in;"></div>')
-            $('.previewPaginated').append('<div class="bibBody" id="pageBody'+i+'" style="height:'+8.25*(i-pages)+'in;top:-'+9*(i-1-pages)+'in;background-color:white;overflow:hidden;position:relative;z-index:'+(pages-i+2)+'"></div>');
-            $('.previewPaginated').append('<div class="bibFooter" id="pageFooter'+i+'" style="height:0.5in;background-color:white;position:relative;z-index:'+(pages-i+3)+';padding-bottom:0.5in;"></div><hr style="width:100%">');
-            
-            var headerout = headerstyle.replace('PAGE', i);
+			console.log(i+': '+pages+' '+bpages+' '+j+' page 1')
+            $('.previewPaginated').append('<div class="pageHeader" data-page="'+i+'" id="pageHeader'+i+'" style="z-index:'+(pages+bpages-i+3)+';"></div>')
+            $('.previewPaginated').append('<div class="bibBody" id="pageBody'+i+'" style="height:'+8.25*(i-pages-bpages-j+2)+'in;margin-top:-'+9*(i-pages-bpages-j+1)+'in;z-index:'+(i-pages+2+bpages)+'"></div>');
+            $('.previewPaginated').append('<div class="bibFooter" id="pageFooter'+i+'" style="z-index:'+(pages-i+3+bpages)+';"></div><hr style="width:100%">');
             //console.log(i-1 + ' ' + headerout);
-            var e = $('.pageHeader')[i-1];
-            $(e).html(headerout);
         }
         $('.bibBody').html($('.previewBibliography').html());
         console.log($('.bibBody').html());
     }
+	for(k=1;k<=bpages+pages+j;k++) {
+		var headerout = headerstyle.replace('PAGE', k);
+		var e = $('.pageHeader')[k-1];
+        $(e).html(headerout);
+	}
     
     
     //$('.preview.p').css('display', 'none');
@@ -346,10 +368,13 @@ function bibliographyTitle(text) {
 }
 function bibliography(type, style, i) {
     var cite = citationsSort[i];
-    style = style.replace('TITLE', cite.title, 'g');
-     
-    if(cite.type == type)
-        b = b + style; 
+	if(cite != undefined) {
+		if(cite.title != undefined)
+			style = style.replace('TITLE', cite.title, 'g');
+		if(cite.type == type)
+			b = b + style;
+	}
+  
 }
 doubleSpaced = false;
 citations = new Array();
@@ -359,7 +384,7 @@ function save() {
 	//var savefile = {'citations': new Array(), 'drafts': new Array(), 'options': {}, 'file': {}};
 	var savedata = {xml: {citations: new Array(), 'drafts': new Array(), 'options': {}, 'file': {}}};
 	var savefile = savedata.xml;
-	if(citations != undefined) {
+	if(citations != undefined && citations[0] != undefined ) {
 		for(i in citations) {
 			for(j in citations[i]) {
 				if(citations[i][j] == undefined) {
@@ -369,7 +394,7 @@ function save() {
 			}
 		}
 	}
-	if(citations != undefined)
+	if(citations != undefined && citations[0] != undefined)
 		savefile.citations = citations;
 	var draftval = inputToJson();
 	draftval.content = null;
@@ -428,6 +453,13 @@ function restore(docid) {
 		localjson = jQuery.parseJSON(localjson);
 	json = localjson;
 	
+	//before we do anything else, we need to set up the format
+	docformat = json.xml.file.format;
+	format2 = docformat;
+	checkloadjscssfile('formats/'+json.xml.file.format+'/format.js', 'js');
+	setTimeout("$('#body').fadeOut(1);input();continueRestore();$('#body').fadeIn(500);", 800);
+}
+function continueRestore() {
 	//first, preload the edit fields
 	if(localjson.xml.drafts.length == undefined || localjson.xml.drafts.length == 0) {
 		localjson = localjson.xml.drafts;
@@ -481,10 +513,7 @@ function restore(docid) {
 	$('#doclang').val(json.xml.file.language);
 	$('#doctags').val(json.xml.file.tags);
 	
-	docformat = json.xml.file.format;
-	format2 = docformat;
-	checkloadjscssfile('formats/'+json.xml.file.format+'/format.js', 'js');
-	setTimeout("input();", 400);
+	
 	
 }
 // TODO - Place ParseXML() into a script file

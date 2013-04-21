@@ -29,7 +29,8 @@ function coverPage() {
 function abstractPage() {
 	//**HEADING-1
 	//**PROPER PAGINATION OF COVER/ABSTRACT
-	format('abstract-header', 'RUNNINGHEAD:left PAGE:RIGHT');
+	$('.previewAbstract').empty();
+	format('abstract-header', 'RUNNINGHEAD:left PAGE:right');
 	abstractOutput(center('Abstract'));
 	abstractOutput('&emsp;<i>Keywords:</i>&nbsp;'+$('#doctags').val());
 	
@@ -56,7 +57,7 @@ function build(obj) {
         format('citation', '(LAST, YEAR, p. PAGE)');
 		format('heading-1', '<b>STYLE</b>', 'center')
         //format('citation-main', '(PAGE)');
-        format('header', 'RUNNINGHEAD:left PAGE:right');
+        format(/*'TopHeader'*/ 'header', 'RUNNINGHEAD:left PAGE:right');
         buildPages();
 }
 

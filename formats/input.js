@@ -36,9 +36,9 @@ function block(b) {
     if(b == 1)
 		$('.previewFullBody').append('<br><br>');
 	else if(b == 2)
-		$('.previewCover').append('<br><br>');
+		$('.coverBody').append('<br><br>');
 	else if(b == 3)
-		$('.previewAbstract').append('<br><br>');
+		$('.abstractBody').append('<br><br>');
     else
         $('#body').append('<br><br>');
 }
@@ -46,9 +46,9 @@ function newLine(b) {
     if(b == 1)
 		$('.previewFullBody').append('<br>');
 	else if(b == 2)
-		$('.previewCover').append('<br>');
+		$('.coverBody').append('<br>');
 	else if(b == 3)
-		$('.previewAbstract').append('<br>');
+		$('.abstractBody').append('<br>');
     else
         $('#body').append('<br>');
 }
@@ -61,10 +61,10 @@ function center(text) {
         return '<div class="center">'+text+'</div>'
 }
 function coverOutput(text) {
-	$('.previewCover').append(text);
+	$('.coverBody').append(text);
 }
 function abstractOutput(text) {
-	$('.previewAbstract').append(text);
+	$('.abstractBody').append(text);
 }
 
 
@@ -95,6 +95,9 @@ function launchCitation(index, quote) {
 	if(citations == undefined) {
 		citations = new Array();
 		citations.length = 0;
+	}
+	if(citationsAbstract == undefined) {
+		citationsAbstract = false;
 	}
     if(quote == undefined) {
         quote = '';        
@@ -228,7 +231,7 @@ function citeCard(cardCiteActive) {
 function citeCardOK() {
 	var abstract = '<br>&emsp;Type a summary of this work.<br><textarea></textarea>';
 		
-	if(citationAbstract)
+	if(citationsAbstract)
 		$('.citecard').append(abstract);
     $('.citecard').append('<br><button onclick="hideCard();citeSubmit();">Add Citation</button>');    
 }

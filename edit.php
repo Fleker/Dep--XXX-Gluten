@@ -114,10 +114,10 @@
     
 </style>
 
-<div class="body">
+<div class="body" id="editorbody">
 <i>What kind of document do you wish to create?</i>
 <br>
-<input type="text" value="MLA" id="docformat" list="formats">&nbsp;&nbsp;Language:<input size="8" list="languages" type="text" value="en_us" placeholder="Language" id="doclang"> 
+<input type="text" value="" id="docformat" list="formats">&nbsp;&nbsp;Language:<input size="8" list="languages" type="text" value="en_us" placeholder="Language" id="doclang"> 
 <br>
 
 <datalist id="languages">
@@ -131,8 +131,11 @@ Tags: <input type="text" placeholder="Space-Separated Tags" id="doctags" size="4
 
 <script>
 //in the future dynamically build list.
+citationsAbstract = false;
 formatlist = new Array('MLA', 'APA');
 formatlistlabel = new Array('Essay', 'Essay');
+
+
 document.write('<datalist id="formats">')
 for(i in formatlist) {
 	document.write('<option value="'+formatlist[i]+'" label="'+formatlistlabel[i]+'">');
@@ -225,6 +228,7 @@ function convertToInput() {
     $('.preview').fadeOut(500);
     
 	$('#body').fadeIn(500);
+	$('#editorbody').fadeIn(500);
 }
 function convertToXML() {
  	//a = Array of info
@@ -255,7 +259,7 @@ function convertToPreview() {
 function print() {
         alert("Make sure you set the Print Margins to None before printing!");
 	convertToPreview();
-	Popup($('.previewPaginated').html());
+	Popup($('.preview').html());
 }
 function Popup(data)
     {
@@ -263,7 +267,7 @@ function Popup(data)
         mywindow.document.write('<html><head><title>Printing '+o.title+'</title>');
         /*optional stylesheet*/ 
 			//mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
-			mywindow.document.write('<style>.center { text-align: center;	padding: 0px; font-size:12pt; font-family:Times; } .right{text-align:right;padding:0px;} hr{display:none;} body {word-wrap: break-word;margin-left: 1in;margin-right:-1in;margin-top:-0.08in;width:6in;</style>');
+			mywindow.document.write('<style>.previewFullBody{display:none;} .page{opacity: 1} .center { text-align: center;	padding: 0px; font-size:12pt; font-family:Times; } .right{text-align:right;padding:0px;} hr{display:none;} body {word-wrap: break-word;margin-left: 1in;margin-right:-1in;margin-top:-0.08in;width:6in;</style>');
                         if(doubleSpaced == true) {
                             mywindow.document.write('<style>body { line-height: 2em; }</style>');
                         }
@@ -366,9 +370,13 @@ function wordCount() {
 	if(n >= max && max > 0) {
 		$('.count_words_bar').css('width', 100*max/n+'%');
 	}
-	if((n <= min && max == 0) || (n <= max && min == 0)) {
+	if(n <= min && min > 0)
+		$('.count_words_bar').css('width', 100*min/n+'%');
+	if(n > min && min > 0) 
+		$('.count_words_bar').css('width', 100+'%');
+	/*if((n <= min && max == 0) || (n <= max && min == 0)) {
 		$('.count_words_bar').css('width', '50%');
-	}
+	}*/
 
 	$('.count_words_bar').show();
 	return n;
@@ -395,7 +403,7 @@ function getContent() {
     
     <div class="previewCover page"></div>
 	<div class="previewAbstract page"></div>
-    <div class="previewPaginated page"></div>
+    <div class="previewPaginated page" style=""></div>
     <div class="previewBibliography page"></div>
     
     <!--<button onclick="demoFromHTML()">Download PDF</button>-->
@@ -444,6 +452,10 @@ body {
 }
 .preview {
     background-color: inherit;
+	margin-left: auto;
+margin-right: auto;
+width: 10.5in;
+background-color: white;
 }
 .xmlx {
 	display: none;
@@ -457,8 +469,8 @@ body {
 }
 .previewPaginated {
  	display: none;
- 	width:90%;
- 	margin-left:5%;
+ 	/*width:90%;
+ 	margin-left:5%;*/
  	word-wrap: break-word;
  	background-color: white;
 }
@@ -598,7 +610,18 @@ u.citation {
     margin-right:auto;
 
     width:8.5in;
+	/*height: 10.25in;*/
 }
+.pageHeader {
+	height:0.5in;background-color:white;position:relative;padding-top:0.5in;
+}
+.pageBody {
+	background-color:white;overflow:hidden;position:relative;
+}
+.pageFooter {
+	height:0.5in;background-color:white;position:relative;padding-bottom:0.5in;
+}
+
 .previewFullBody {
     display:none;
 }

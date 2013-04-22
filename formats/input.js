@@ -85,12 +85,65 @@ function divInsert(type) {
     } else if(type == 'Character') {
         openTab('http://copypastecharacter.com/classic');
     } else {
-		cursorInsert('<u class="'+type+'">'+type.toUpperCase()+'</u>&nbsp;');
+		cursorInsert('<u class="'+type.toLowerCase()+'">'+type.toUpperCase()+'</u>&nbsp;');
 	}
 }
 
 //citations = new Array();
+function launchCitationTag(index) {
+	//console.log('x');
+	$('.hovertag').css('left', window.mouse.X-20);
+	$('.hovertag').css('top', window.mouse.Y-12);
+	$('.hovertag').css('display', 'block');
+	try {
+		$('.hovertag').html('<div class="center" onclick="launchCitationx('+index+');">'+citations[index].title+'</div>');	
+	}
+	catch(e) {
+		$('.hovertag').html('<div class="center" onclick="launchCitationx('+index+');">Edit citation</div>');
+	}
+	
+}
+
+function hideCitationTag() {
+	//$('.hovertag').css('left', -200
+	$('.hovertag').css('display', 'none');
+}
+function hoverCitationTag() {
+	/*$('.citation').hover(
+	function() {
+		launchCitationTag($(this).attr('data-id'));
+	}, function () {
+		hideCitationTag();
+	}
+	);*/
+	$('.citation').on('mouseenter', function() {
+		launchCitationTag($(this).attr('data-id'));	
+	});
+	y2 = 0;
+	//just having the hideTag code seems to produce a bug where it constantly hides the tag even while properly on the citation.
+	$('.citation').on('mouseleave', function() {
+		var y = 0;
+		y = y+1;
+		y2 = y2+1;
+		console.log(y)
+		if(y2 >= 2) {
+			hideCitationTag();
+			y = 0;
+			y2 = 0;
+		}
+	});
+	console.log($('.citation'));
+}
+//setTimeout("hoverCitationTag()", 1000);
+
+//onmouseover="launchCitationTag('+citations.length+')" onmouseout="hideCitationTag()"
+function launchCitationx(index) {
+	launchCitation(index);
+	setTimeout("launchCitation("+index+");", 500);
+}
 function launchCitation(index, quote) {
+	card('citation', 'Citing a Reference');
+	
     //$('.citation')[0].getAttribute('data-id')
 	if(citations == undefined) {
 		citations = new Array();
@@ -103,14 +156,16 @@ function launchCitation(index, quote) {
         quote = '';        
     }
     if(index == undefined) {
-        cursorInsert('<u class="citation" data-id="'+citations.length+'" ondblclick="launchCitation('+citations.length+')">QUOTE</u>'+quote+'. &nbsp;&nbsp;');
-        index = citations.length;
+        cursorInsert('<u class="citation" data-id="'+citations.length+'" >QUOTE</u>'+quote+'. &nbsp;&nbsp;');
+		index = citations.length;
+		citations.push();
+		//hoverCitationTag();
     }
         //$('.citation').show();
-    card('citation', 'Citing a Reference');
+    
     var cardCiteActive = false;
-    o = 'What do you want to cite?<br><input class="citelist" type="text" list="citelist"id="citeCardType">';
-    o = o + '<datalist id="citelist">\n\
+    out = 'What do you want to cite?<br><input class="citelist" type="text" list="citelist"id="citeCardType">';
+    out = out + '<datalist id="citelist">\n\
                 <option value="Article Online">\n\
                 <option value="Book - Print">\n\
                 <option value="Book - Online">\n\
@@ -125,9 +180,11 @@ function launchCitation(index, quote) {
                 <option value="Website - Book">\n\
                 <option value="Website - Image">\n\
             </datalist>';
-    $('.cardBorder').append(o);
+    $('.cardBorder').append(out);
+	console.log(out);
     $('.citelist')[0].focus();
     citeCard(cardCiteActive);
+	console.log($('.cardBorder'))
     
     if(citations.length != index) {
         $('#citeCardType').val(citations[index].type);
@@ -167,32 +224,32 @@ function launchCitation(index, quote) {
         if(z == 'Book - Print') {
             $('.citecard').html('\n\
                 '+title+bookpub+author+publication);
-            citeCardOK();
+            citeCardOK(index);
         }
         else if(z == 'Book - Online') {
             $('.citecard').html('\n\
                 '+title+bookpub+author+publication+website+pubdate+accdate);
-            citeCardOK();
+            citeCardOK(index);
         }
         else if(z == 'Book - eBook' || z == 'eBook' || z == 'Website - Book') {
             $('.citecard').html('\n\
                 '+title+bookpub+author+publication+medium);
-            citeCardOK();
+            citeCardOK(index);
         }
         else if(z == 'Book - Database') {
             $('.citecard').html('\n\
                 '+title+bookpub+author+publication+database);
-            citeCardOK();
+            citeCardOK(index);
         }
         else if(z == 'Website - Blog') {
             $('.citecard').html('\n\
                 '+title+author+website+pubdate+accdate);
-            citeCardOK();            
+            citeCardOK(index);            
         }
         else if(z == 'Website - Image') {
             $('.citecard').html('\n\
                 '+title+description+author+website+pubdate+accdate);
-            citeCardOK();
+            citeCardOK(index);
         }
         
         
@@ -228,15 +285,15 @@ function citeCard(cardCiteActive) {
         $('.cardBorder').append('<div class="citecard"></div>')    
     cardCiteActive = true;
 }
-function citeCardOK() {
+function citeCardOK(index) {
 	var abstract = '<br>&emsp;Type a summary of this work.<br><textarea></textarea>';
 		
 	if(citationsAbstract)
 		$('.citecard').append(abstract);
-    $('.citecard').append('<br><button onclick="hideCard();citeSubmit();">Add Citation</button>');    
+    $('.citecard').append('<br><button onclick="hideCard();citeSubmit('+index+');">Add Citation</button>');    
 }
-function citeSubmit() {
-    citations.push({
+function citeSubmit(index) {
+    citations[index] = {
         'type': $('#citeCardType').val(),
         'title': $('#citeCardTitle').val(),
         'page': $('#citeCardPage').val(),
@@ -257,7 +314,7 @@ function citeSubmit() {
         'database': $('#citeCardDatabase').val(),
         'durl': $('#citeCardDUrl').val(),
         'medium': $('#citeCardMedium').val()
-    });
+	};
     
 }
 //Tim Down -- http://stackoverflow.com/questions/4767848/get-caret-cursor-position-in-contenteditable-area-containing-html-content

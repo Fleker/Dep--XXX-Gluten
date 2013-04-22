@@ -31,6 +31,7 @@ function hideCard() {
     }, 500, function() {
             $('.cardBorder').html('<div class="cardHead"></div>');
             cardActive = false;
+			$('.card').css('display','none')
     });
 	save();
 }    
@@ -54,12 +55,14 @@ $(document).mousemove(function(e){
       window.mouse.Y = e.pageY;
 });
 cardActive = false;
-function card(type, input) {
+function card(type, cardinput) {
         cardActive = true;
  	//displays a card
  	//see http://docs.jquery.com/Tutorials:Mouse_Position
- 	$('.cardBorder').html('<div class="cardHead"></div>');
- 	$('.cardHead').html(capitalizeFirstLetter(input));
+	//cardinput = input;
+ 	$('.cardBorder').html('<div class="cardHead">'+capitalizeFirstLetter(cardinput)+'</div>');
+	console.log($('.cardBorder').html())
+ 	//setTimeout("$('.cardHead').html();", 500);
  	if(type == 'word') {
  	 	/* A word, ping wikitionary. Then Google (maybe Wikipedia). Also Thesaurus and get common fixes
 		*
@@ -102,7 +105,7 @@ function card(type, input) {
 				    $('.cardBorder').append(readData);
 				};
 	    $.getJSON("http://en.wiktionary.org/w/api.php?action=query&format=json&callback=?",
-		{titles:lowerFirstLetter(input), prop: "revisions", rvprop:"content"},
+		{titles:lowerFirstLetter(cardinput), prop: "revisions", rvprop:"content"},
 		wikipediaHTMLResult);
 		  
 		//$.getJSON("http://en.wiktionary.org/w/api.php?action=parse&format=json&callback=?", {page:lowerFirstLetter(input), prop:"text"}, wikipediaHTMLResult);
@@ -112,9 +115,9 @@ function card(type, input) {
  	else if(type == 'phrase') {
  	 	//
  	}
-        else if(type == 'citation') {
-            $('.cardBorder').css('border-color', '#0ff');
-        }
+    else if(type == 'citation') {
+        $('.cardBorder').css('border-color', '#0ff');
+    }
         else if(type == 'character') {
             //$('.cardBorder').css('border-color', '#000');
         }
@@ -130,7 +133,7 @@ function card(type, input) {
  	   	opacity: 1,
  	   	top: animate+'px'
  	}, 500, function() {
-
+		$('.card').css('display','block')
 	});
         $('.cardBorder').animate({
                 top: animate+11+'px'           

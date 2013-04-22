@@ -215,11 +215,12 @@ restore(docid);
 </div>
 
 <!-- Card -->
-<div class="card card2" style="opacity: 0">
+<div class="card card2" style="display:none;">
     <div class="cardBorder card" <!--style="border-color:#d00"-->>
 		<div class="cardHead"></div>
 	</div>
 </div>
+<div class="hovertag"></div>
 
 <script>
 function convertToInput() {
@@ -267,7 +268,7 @@ function Popup(data)
         mywindow.document.write('<html><head><title>Printing '+o.title+'</title>');
         /*optional stylesheet*/ 
 			//mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
-			mywindow.document.write('<style>.previewFullBody{display:none;} .page{opacity: 1} .center { text-align: center;	padding: 0px; font-size:12pt; font-family:Times; } .right{text-align:right;padding:0px;} hr{display:none;} body {word-wrap: break-word;margin-left: 1in;margin-right:-1in;margin-top:-0.08in;width:6in;</style>');
+			mywindow.document.write('<style>.previewFullBody{display:none;} .previewBibliography{display:none;} .pageHeader {height:0.5in;background-color:white;position:relative;padding-top:0.5in;} .pageBody{background-color:white;overflow:hidden;position:relative;height:8.25in;} .pageFooter{height:0.5in;background-color:white;position:relative;padding-bottom:0.5in;} .preview{width: 10.5in;} .page{opacity: 1;} .center { text-align: center;	padding: 0px; font-size:12pt; font-family:Times; } .right{text-align:right;padding:0px;} hr{display:none;} body {word-wrap: break-word;margin-left: 1in;margin-right:-1in;margin-top:-0.08in;width:6in;</style>');
                         if(doubleSpaced == true) {
                             mywindow.document.write('<style>body { line-height: 2em; }</style>');
                         }
@@ -404,7 +405,7 @@ function getContent() {
     <div class="previewCover page"></div>
 	<div class="previewAbstract page"></div>
     <div class="previewPaginated page" style=""></div>
-    <div class="previewBibliography page"></div>
+    <div class="previewBibliography page" style="display:none;"></div>
     
     <!--<button onclick="demoFromHTML()">Download PDF</button>-->
 </div>
@@ -594,6 +595,15 @@ background-color: white;
 .citecard {
     overflow:auto;
     height:132px;    
+}
+.hovertag {
+	position:fixed;
+	height:40px;
+	background-color:black;
+	color:white;
+	overflow:hidden;
+	width:150px;
+	left:-200px;
 }
 u.citation {
     text-decoration: none; border-bottom: 1px solid; border-color: #0ff;

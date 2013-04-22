@@ -7,18 +7,19 @@ function input() {
 	newLine();
 	insert('university', 'Institutional Affiliation', 'University/School');
 	block();
-	insert('abstract', null, 'Abstract (150-250 c)');
+	insert('abstract', null, 'Abstract (150-250 w)');
 	
 	block();
 	insert('content');
 
-	toolbarRow(['Character', 'Top Heading', 'Citation', 'Image', 'Long Quote']);
+	toolbarRow(['Character', 'Heading-1', 'Citation', 'Image', 'Long Quote']);
 	//quote('cite()');
 	citationAbstract = true;
 }         
 function coverPage() {
 	$('.previewCover').empty();
-	format('cover-header', 'Running Head: RUNNINGHEAD:left PAGE:RIGHT');
+	format('cover-header', 'Running Head: RUNNINGHEAD:left PAGE:right');
+	coverOutput('<div style="height:3.25in;"></div>');
 	coverOutput(center(o.title));
 		newLine(2);
 	coverOutput(center(o.author.firstname + ' ' + o.author.lastname));
@@ -32,7 +33,8 @@ function abstractPage() {
 	$('.previewAbstract').empty();
 	format('abstract-header', 'RUNNINGHEAD:left PAGE:right');
 	abstractOutput(center('Abstract'));
-	abstractOutput('&emsp;<i>Keywords:</i>&nbsp;'+$('#doctags').val());
+	abstractOutput(o.abstract)
+	abstractOutput('<br>&emsp;&emsp;<i>Keywords:</i>&nbsp;'+$('#doctags').val().toLowerCase().replace(' ', ', ', 'gi'));
 	
 }
 

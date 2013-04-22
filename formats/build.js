@@ -214,13 +214,16 @@ function format(type, style, positioning) {
 		if(type == 'header')
 	        headerstyle = style;
 		else if(type == 'cover-header') {
-			$('.previewCover').append('<div class="pageHeader coverHeader" data-page="'+1+'" id="pageHeader'+1+'" style=""></div>');
+			style = style.replace('PAGE', 1, 'gi');
+			$('.previewCover').html('<div class="pageHeader coverHeader" data-page="'+1+'" id="pageHeader'+1+'" style="">'+style+'</div>');
 			$('.previewCover').append('<div class="pageBody coverBody" id="pageBody'+1+'" style="height:'+8.25*1+'in;top:-'+9*(1-1)+'in;"></div>');
 			$('.previewCover').append('<div class="pageFooter coverFooter" id="pageFooter'+1+'" style=""></div><hr style="width:100%">');
         
 		}
 		else if(type == 'abstract-header') {
-			$('.previewAbstract').append('<div class="pageHeader abstractHeader" data-page="'+2+'" id="pageHeader'+2+'" style=""></div>');
+			//HACKING THINGS IS BAD
+			style = style.replace('PAGE', 2, 'gi');
+			$('.previewAbstract').html('<div class="pageHeader abstractHeader" data-page="'+2+'" id="pageHeader'+2+'" style="">'+style+'</div>');
 			$('.previewAbstract').append('<div class="pageBody abstractBody" id="pageBody'+2+'" style="height:'+8.25*1+'in;margin-top:-'+9*(2-2)+'in;"></div>');
 			$('.previewAbstract').append('<div class="pageFooter abstractFooter" id="pageFooter'+2+'" style=""></div><hr style="width:100%">');
 		}
@@ -306,11 +309,12 @@ function buildPages() {
         $('.bibBody').html($('.previewBibliography').html());
         console.log($('.bibBody').html());
     }
-	for(k=1;k<=bpages+pages+j;k++) {
+	for(k=j;k<=bpages+pages+j;k++) {
 		var headerout = headerstyle.replace('PAGE', k);
 		var e = $('.pageHeader')[k-1];
         $(e).html(headerout);
 	}
+	$('.previewBibliography').empty();
     
     
     //$('.preview.p').css('display', 'none');
@@ -372,7 +376,7 @@ function bibliography(type, style, i) {
 		if(cite.title != undefined)
 			style = style.replace('TITLE', cite.title, 'g');
 		if(cite.type == type)
-			b = b + style;
+			b = b + '<p style="text-indent: -30px;margin-left: 30px;">' + style + '</p>';
 	}
   
 }
@@ -487,6 +491,7 @@ function continueRestore() {
 				$('#'+i).html(out);
 			}*/
 		$('#'+i).html(localStorage[docid+'.content']);
+		hoverCitationTag();
 		}
 		else {
 			$('#'+i).val(localjson.value[a[i]]);

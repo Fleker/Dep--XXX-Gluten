@@ -320,7 +320,9 @@ window.onload = function() {
                         //cursorInsert(quote);
                         window.cursorposition = cursorPos();
                         launchCitation(undefined, quote);
-                    }
+                    } else {
+						console.log('Not a quote because:'+quote);
+					}
                 }
 		
 	}

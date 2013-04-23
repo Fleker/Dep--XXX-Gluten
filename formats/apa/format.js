@@ -55,11 +55,12 @@ function build(obj) {
             }
             
         }
+		//console.log($('.previewFullBody').html());
+		format(/*'TopHeader'*/ 'header', 'RUNNINGHEAD:left PAGE:right');
         //pagination([1, 1, 1, 1], [8.5, 11])
         format('citation', '(LAST, YEAR, p. PAGE)');
-		format('heading-1', '<b>STYLE</b>', 'center')
+		format('heading-1', '<br><b>STYLE</b>', 'center')
         //format('citation-main', '(PAGE)');
-        format(/*'TopHeader'*/ 'header', 'RUNNINGHEAD:left PAGE:right');
         buildPages();
 }
 

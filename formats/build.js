@@ -160,9 +160,38 @@ function format(type, style, positioning) {
 			positioning = 'left';
 		
     if(type == 'citation' || type == 'citation-main') {
-        index = 0;
-        c = $('.previewFullBody').html();
-        for(i in citations) {
+		c = $('.previewFullBody').html();
+		i = 0;
+		
+		index = -1;
+		currentPos = c.substr(index+1);
+		index2 = 0;
+		while(index < c.length) {
+			index = currentPos.indexOf('<u class="citation"');
+			currentPos = currentPos.substr(index);
+			index2 = c.indexOf(currentPos);
+            starttag = currentPos.indexOf('>');
+            endtag = currentPos.indexOf('</u>');
+            string = currentPos.substring(starttag+1, endtag);	
+			console.log(type+': i.'+(index)+' '+(index2+starttag)+'-'+(index2+endtag)+' ;'+(endtag+11+index2));
+			console.log(c.substr(endtag+11+index2, 16));
+			//index = index + 1;
+			//index++;
+			currentPos = currentPos.substr(1);
+				style = style.replace("LAST", citations[i].last);
+				style = style.replace("PAGE", citations[i].page);
+				style = style.replace("YEAR", citations[i].year);
+
+				console.log(style, index, endtag);
+				if(index > -1 && ((citations[i].main != true && type == 'citation') || (citations[i].main == true && type == 'citation-main') ))
+					$('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+11+index2)+' '+style+' '+$('.previewFullBody').html().substring(endtag+11+index2));
+				else if(index == -1) {
+					index = c.length + 1;
+					return;
+				}
+		}
+		
+        /*for(i in citations) {
 			if(citations[i] != undefined) {
 				var currentPos = c.substr(index);
 				index = currentPos.indexOf('<u class="citation"');
@@ -177,8 +206,8 @@ function format(type, style, positioning) {
 				if(index > -1 && ((citations[i].main != true && type == 'citation') || (citations[i].main == true && type == 'citation-main') ))
 					$('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+11)+' '+style+' '+$('.previewFullBody').html().substring(endtag+11));
 			}
-		}
-        if(type == 'citation-main')
+		}*/
+        //if(type == 'citation-main')
             $('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
     } else if(type == 'header' || type == 'cover-header' || type == 'abstract-header') {
         style = style.replace("LAST", o.author.lastname);
@@ -227,12 +256,39 @@ function format(type, style, positioning) {
 			$('.previewAbstract').append('<div class="pageBody abstractBody" id="pageBody'+2+'" style="height:'+8.25*1+'in;margin-top:-'+9*(2-2)+'in;"></div>');
 			$('.previewAbstract').append('<div class="pageFooter abstractFooter" id="pageFooter'+2+'" style=""></div><hr style="width:100%">');
 		}
-	} else if(type == 'heading-1') {
+	} else if(type == 'heading-1x') {
 		//**			
 	} else {
-        index = 0;
         c = $('.previewFullBody').html();
-        for(i in citations) {
+		i = 0;
+		
+		index = -1;
+		currentPos = c.substr(index+1);
+		index2 = 0;
+		while(index < c.length) {
+			index = currentPos.indexOf('<u class="'+type+'"');
+			currentPos = currentPos.substr(index);
+			index2 = c.indexOf(currentPos);
+            starttag = currentPos.indexOf('>');
+            endtag = currentPos.indexOf('</u>');
+            string = currentPos.substring(starttag+1, endtag);	
+			console.log(type+': i.'+(index2)+' '+(index2+starttag)+'-'+(index2+endtag)+' ;'+string);
+			//index = index + 1;
+			//index++;
+			currentPos = currentPos.substr(1);
+			if(index > -1) {
+				style = style.replace('STYLE', string, 'gi');
+				console.log(style);
+                $('.previewFullBody').html($('.previewFullBody').html().substring(0,index2)+style+$('.previewFullBody').html().substring(4+endtag+index2));
+			} else {
+				index = c.length + 1;
+				return;
+			}		
+			i++;
+		}
+		$('.previewFullBody').html($('.previewFullBody').html().replace('<u class="'+type+'"[^<]+>', '', 'gi'));
+    
+        /*for(i in citations) {
             var currentPos = c.substr(index);
             index = currentPos.indexOf('<u class="'+type+'"');
             starttag = currentPos.indexOf('>');
@@ -240,12 +296,14 @@ function format(type, style, positioning) {
             string = currentPos.substring(starttag+1, endtag);
             
             /*style = style.replace("LAST", citations[i].last);
-            style = style.replace("PAGE", citations[i].page);*/
+            style = style.replace("PAGE", citations[i].page);
             //console.log(style, index, endtag);
             if(index > -1)
                 $('.previewFullBody').html($('.previewFullBody').html().substring(0,starttag)+string+$('.previewFullBody').html().substring(endtag));
-        }
-        $('.previewFullBody').html($('.previewFullBody').html().replace('<u class="'+type+'"[^<]+>', '', 'gi'));
+			
+			
+		} */
+        //$('.previewFullBody').html($('.previewFullBody').html().replace('<u class="'+type+'"[^<]+>', '', 'gi'));
     
     }
 }
@@ -465,12 +523,18 @@ function restore(docid) {
 }
 function continueRestore() {
 	//first, preload the edit fields
-	if(localjson.xml.drafts.length == undefined || localjson.xml.drafts.length == 0) {
+	if(localjson.xml.drafts == undefined) {
 		localjson = localjson.xml.drafts;
+		a = new Array();
 	} else {
-		localjson = localjson.xml.drafts[localjson.xml.drafts.length - 1];
+		if(localjson.xml.drafts.length == undefined || localjson.xml.drafts.length == 0) {
+			localjson = localjson.xml.drafts;
+		} else {
+			localjson = localjson.xml.drafts[localjson.xml.drafts.length - 1];
+		}
+		a = localjson.key;
 	}
-	a = localjson.key;
+	
 	for(i in a) {
 		//console.log(i + ' ' + a[i] + ' ' + localjson.value[a[i]])
 		if(a[i] == 'author') {
@@ -508,9 +572,14 @@ function continueRestore() {
 	}
 	
 	//options
-	doubleSpaced = json.xml.options.doubleSpaced;
-	$('#count_words_min').val(json.xml.options.wordcount.min);
-	$('#count_words_max').val(json.xml.options.wordcount.max);
+	try { doubleSpaced = json.xml.options.doubleSpaced; } catch(e) { doubleSpaced = false; }
+	try {
+		$('#count_words_min').val(json.xml.options.wordcount.min);
+		$('#count_words_max').val(json.xml.options.wordcount.max);
+	} catch(e) {
+		$('#count_words_min').val(0);
+		$('#count_words_max').val(0);
+	}
 		//timer
 	
 	//file

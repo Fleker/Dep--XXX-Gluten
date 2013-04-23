@@ -143,7 +143,8 @@ and open the template in the editor.
 					docid = parseInt(Math.random()*1000000000000000).toString(36);
 				}
 				console.log('Creating document '+docid);
-				var xml = {'xml': {}};
+				//author - localStorage._profile.fullname
+				var xml = {xml: {drafts:{}, file:{author: 'Nick Felker', format:'MLA', language:'en_us', lastedit:0, tags:'', title:''}}};
 				localStorage[docid] = json2xml(xml);
 				loadDoc(docid);
 			 }
@@ -192,6 +193,7 @@ body {
  	width:101%;
  	margin-left:-1%;
  	padding-left:1%;
+	z-index:2;
 }
 .bg {
 	background-color: #ddd;

@@ -167,6 +167,9 @@ function format(type, style, positioning) {
 		currentPos = c.substr(index+1);
 		index2 = 0;
 		while(index < c.length) {
+			c = $('.previewFullBody').html();
+			currentPos = c.substr(index2+1);
+			
 			index = currentPos.indexOf('<u class="citation"');
 			currentPos = currentPos.substr(index);
 			index2 = c.indexOf(currentPos);
@@ -184,12 +187,14 @@ function format(type, style, positioning) {
 
 				console.log(style, index, endtag);
 				if(index > -1 && ((citations[i].main != true && type == 'citation') || (citations[i].main == true && type == 'citation-main') ))
-					$('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+11+index2)+' '+style+' '+$('.previewFullBody').html().substring(endtag+11+index2));
+					$('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+12+index2)+' '+style+' '+$('.previewFullBody').html().substring(endtag+12+index2));
 				else if(index == -1) {
 					index = c.length + 1;
-					return;
+					//return;
 				}
 		}
+		console.log($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
+		$('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
 		
         /*for(i in citations) {
 			if(citations[i] != undefined) {
@@ -208,7 +213,6 @@ function format(type, style, positioning) {
 			}
 		}*/
         //if(type == 'citation-main')
-            $('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
     } else if(type == 'header' || type == 'cover-header' || type == 'abstract-header') {
         style = style.replace("LAST", o.author.lastname);
 		if(o.runninghead != undefined)
@@ -266,6 +270,9 @@ function format(type, style, positioning) {
 		currentPos = c.substr(index+1);
 		index2 = 0;
 		while(index < c.length) {
+			c = $('.previewFullBody').html();
+			currentPos = c.substr(index2+1);
+			
 			index = currentPos.indexOf('<u class="'+type+'"');
 			currentPos = currentPos.substr(index);
 			index2 = c.indexOf(currentPos);
@@ -282,7 +289,7 @@ function format(type, style, positioning) {
                 $('.previewFullBody').html($('.previewFullBody').html().substring(0,index2)+style+$('.previewFullBody').html().substring(4+endtag+index2));
 			} else {
 				index = c.length + 1;
-				return;
+				//return;
 			}		
 			i++;
 		}
@@ -585,9 +592,7 @@ function continueRestore() {
 	//file
 	$('#docformat').val(json.xml.file.format);
 	$('#doclang').val(json.xml.file.language);
-	$('#doctags').val(json.xml.file.tags);
-	
-	
+	$('#doctags').val(json.xml.file.tags);	
 	
 }
 // TODO - Place ParseXML() into a script file

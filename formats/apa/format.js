@@ -12,7 +12,7 @@ function input() {
 	block();
 	insert('content');
 
-	toolbarRow(['Character', 'Heading-1', 'Citation', 'Image', 'Long Quote']);
+	toolbarRow(['Character', 'Heading-1', 'Citation', 'Image', 'Long Quote', 'CloseTag']);
 	//quote('cite()');
 	citationAbstract = true;
 }         

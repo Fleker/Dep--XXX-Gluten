@@ -72,6 +72,7 @@ function toolbarRow(arr) {
 	$('.toolbar').html('');
 	for(i in arr) {
 		$('.toolbar').append('&nbsp;<span onclick="divInsert(\''+arr[i]+'\')" class="tool"><b>'+arr[i]+'</b></span>');
+		setTimeout("if('"+arr[i].toLowerCase()+"' != 'citation') {hoverTag('"+arr[i].toLowerCase()+"', '"+arr[i].toLowerCase()+"')};", 1000);	
 	}
 }
 function openTab(url) {
@@ -84,22 +85,30 @@ function divInsert(type) {
         launchCitation();
     } else if(type == 'Character') {
         openTab('http://copypastecharacter.com/classic');
+	} else if(type == 'CloseTag') {
+		cursorInsert('</u>&nbsp;');
     } else {
-		cursorInsert('<u class="'+type.toLowerCase()+'">'+type.toUpperCase()+'</u>&nbsp;');
+		cursorInsert('<u class="'+type.toLowerCase()+'" <!--onmouseover="hoverTag(\''+type.toLowerCase()+'\', \''+type.toLowerCase()+'\');" onmouseout="/*alert(5);*/hideCitationTag()" -->>'+type.toUpperCase()+'</u>&nbsp;');
+		//hoverTag(type, type);
 	}
 }
 
 //citations = new Array();
-function launchCitationTag(index) {
+function launchCitationTag(index, string) {
+	if(index == null) 
+		index = -1;
 	//console.log('x');
-	$('.hovertag').css('left', window.mouse.X-20);
-	$('.hovertag').css('top', window.mouse.Y-12);
+	$('.hovertag').css('left', window.mouse.onX-75);
+	$('.hovertag').css('top', window.mouse.onY-1);
 	$('.hovertag').css('display', 'block');
 	try {
 		$('.hovertag').html('<div class="center" onclick="launchCitationx('+index+');">'+citations[index].title+'</div>');	
 	}
 	catch(e) {
-		$('.hovertag').html('<div class="center" onclick="launchCitationx('+index+');">Edit citation</div>');
+		if(string == undefined) 
+			$('.hovertag').html('<div class="center" onclick="launchCitationx('+index+');">Edit citation</div>');
+		else
+			$('.hovertag').html('<div class="center">'+string+'</div>');
 	}
 	
 }
@@ -107,6 +116,20 @@ function launchCitationTag(index) {
 function hideCitationTag() {
 	//$('.hovertag').css('left', -200
 	$('.hovertag').css('display', 'none');
+}
+function hoverTag(string, classname) {
+	//live is depreciated, but 'on' doesn't do future items
+	
+	if(classname != undefined) {
+		$('.'+classname).on('mouseenter', function() {
+			//!--!
+			launchCitationTag(null, string)
+		});
+		$('.'+classname).on('mouseleave', function() {
+			hideCitationTag();
+		});
+		console.log('Hovertagged '+classname+': '+string);
+	}
 }
 function hoverCitationTag() {
 	/*$('.citation').hover(
@@ -118,6 +141,7 @@ function hoverCitationTag() {
 	);*/
 	$('.citation').on('mouseenter', function() {
 		launchCitationTag($(this).attr('data-id'));	
+		//console.log(); -GET HEIGHT AND WIDTH IN DOC TO INTERACT WITH TAG
 	});
 	y2 = 0;
 	//just having the hideTag code seems to produce a bug where it constantly hides the tag even while properly on the citation.

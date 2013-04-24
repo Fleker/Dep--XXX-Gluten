@@ -321,7 +321,7 @@ window.onload = function() {
                         window.cursorposition = cursorPos();
                         launchCitation(undefined, quote);
                     } else {
-						console.log('Not a quote because:'+quote);
+						console.log('Not a quote because:\''+quote+'\' @ '+(cursorPos()-1));
 					}
                 }
 		

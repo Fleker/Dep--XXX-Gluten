@@ -54,7 +54,7 @@ function inputToJson() {
             
             k=0;
             for(j in ca){
-                if(ca[j].length && ca[j] != '<br>' && ca[j] != '</div>') {
+                if(ca[j].length && ca[j] != '<br>' && ca[j] != '</div>' && !(ca[j].substr(1) == '<' && ca[j].substr(-1) == '>')) {
                     o.content[j-k] = {type: 'paragraph', value: ca[j]};
                     
                     //parse special items
@@ -67,7 +67,9 @@ function inputToJson() {
                             
                         }
                     }*/
-                }
+                } else if((ca[j].substr(1) == '<' && ca[j].substr(-1) == '>')) {
+					o.content[j-k] = {type:'other', value: ca[j]};
+				}
                 else
                     k++;
                 //this way, if there is a blank item in the array, this offsets the array so it starts at 0 and goes in order, skipping no items.
@@ -430,7 +432,25 @@ function compare(a,b) {
 
 b = '';
 function bibliographyTitle(text) {
-	citationsSort = citations;
+	citationsSort = new Array();
+	//citationsSort = citations;
+	//root out un-used citations -- also do some formatting here)
+	var ca = document.getElementsByClassName('citation');
+	if(ca.length) {
+		console.log(ca)
+		for(i in citations) {
+			console.log('Checking citation#'+i);
+			for(j=0;j<=ca.length;j++) {
+				if(parseInt(j) > -1) {
+					console.log('  Checking citation id: '+$(ca[j]).attr('id'));
+					if( $(ca[j]).attr('data-id') == i) {
+						citationsSort.push(citations[i]);
+						console.log('Citation identified'+i);
+					}
+				}
+			}
+		}
+	}
 	citationsSort = citationsSort.sort(compare);
 	
     b = '<div class="center">'+text+'</div>';    
@@ -440,8 +460,131 @@ function bibliography(type, style, i) {
 	if(cite != undefined) {
 		if(cite.title != undefined)
 			style = style.replace('TITLE', cite.title, 'g');
+			style = style.replace('FIRST', cite.first, 'g');
+			style = style.replace('LAST', cite.last, 'g');
+			style = style.replace('CITY', cite.city, 'g');
+			style = style.replace('PUBLISHER', publisherAbr(cite.publisher), 'g');
+			style = style.replace('DATE', cite.year, 'g');
+			style = style.replace('EDITION', edition(cite.edition), 'g');
 		if(cite.type == type)
 			b = b + '<p style="text-indent: -30px;margin-left: 30px;">' + style + '</p>';
+	}
+	function edition(e) {
+		switch (e) {
+			case '':
+				return '';
+				break;
+			case 1:
+				//return '1st ed.';
+				return '';
+				break;
+			case 2:
+				return '2nd ed.';
+				break;
+			case 3:
+				return '3rd ed.';
+			default:
+				return e+'th ed.';
+		}
+	}
+	function publisherAbr(publisher) {
+		switch (publisher) {
+			case 'Harry N. Abrams, Inc.':
+				return 'Abrams';
+				break;
+			case 'Allyn and Bacon, Inc.':
+				return 'Allyn';
+				break;
+			case 'Appleton-Century-Crofts':
+				return 'Appleton';
+				break;
+			case 'Basic Books':
+				return 'Basic';
+				break;
+			case 'R. R. Bowker Co.':
+				return 'Bowker';
+				break;
+			case 'Cengage Learning':
+				return 'Cengage';
+				break;
+			case 'Dodd, Mead, and Co.':
+				return 'Dodd';
+				break;
+			case 'Doubleday and Co., Inc.':
+				return 'Doubleday';
+				break;
+			case 'Farrar, Straus, and Giroux, Inc.':
+				return 'Farrar';
+				break;
+			case 'The Feminist Press at the City University of New York':
+				return 'Feminist';
+				break;
+			case 'Harcourt Brace':
+				return 'Harcourt';
+				break;
+			case 'HarperCollins':
+				return 'Harper';
+				break;
+			case 'Harvard University Press':
+				return 'Harvard UP';
+				break;
+			case 'Holt, Rinehart and Winston, Inc.':
+				return 'Holt';
+				break;
+			case 'Houghton Mifflin Co.':
+				return 'Houghton';
+				break;
+			case 'Alfred A. Knopf, Inc.':
+				return 'Knopf';
+				break;
+			case 'J. B. Lippincott Co.':
+				return 'Lippincott';
+				break;
+			case 'The MIT Press':
+				return 'MIT P';
+				break;
+			case 'The Modern Language Association of America':
+				return 'MLA';
+				break;
+			case 'W. W. Norton and Co., Inc.':
+				return 'Norton';
+				break;
+			case 'Oxford University Press, Inc.':
+				return 'Oxford UP';
+				break;
+			case 'Princeton University Press':
+				return 'Princeton UP';
+				break;
+			case 'Rand McNally and Co.':
+				return 'Rand';
+				break;
+			case 'Random House, Inc.':
+				return 'Random';
+				break;
+			case 'St. Martin\s Press, Inc.':
+				return 'St. Martin\s';
+				break;
+			case 'Charles Scribner\'s Sons':
+				return 'Scribner\s';
+				break;
+			case 'Simon and Schuster, Inc.':
+				return 'Simon';
+				break;
+			case 'University Microfilms International':
+				return 'UMI';
+				break;
+			case 'University of Chicago Press':
+				return 'U of Chicago P';
+				break;
+			case 'The Viking Press, Inc.':
+				return 'Viking';
+				break;
+			case 'Yale University Press':
+				return 'Yale UP';
+				break;
+			default: 
+				return publisher;
+		} 
 	}
   
 }

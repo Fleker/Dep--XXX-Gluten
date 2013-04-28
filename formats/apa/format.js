@@ -12,7 +12,7 @@ function input() {
 	block();
 	insert('content');
 
-	toolbarRow(['Character', 'Heading-1', 'Citation', 'Image', 'Long Quote', 'CloseTag']);
+	toolbarRow(['Character', 'Heading-1', 'Citation', 'Image', 'LongQuote', 'CloseTag']);
 	//quote('cite()');
 	citationAbstract = true;
 }         
@@ -57,9 +57,10 @@ function build(obj) {
         }
 		//console.log($('.previewFullBody').html());
 		format(/*'TopHeader'*/ 'header', 'RUNNINGHEAD:left PAGE:right');
+		format('longquote', '<p style="margin-left:0.5in">STYLE</p>');
         //pagination([1, 1, 1, 1], [8.5, 11])
         format('citation', '(LAST, YEAR, p. PAGE)');
-		format('heading-1', '<br><b>STYLE</b>', 'center')
+		format('heading-1', '<br><div class="center"><b>STYLE</b></div><br>', 'center')
         //format('citation-main', '(PAGE)');
         buildPages();
 }
@@ -72,6 +73,7 @@ function parseWriting(text) {
 function formatBibliography() {
     bibliographyTitle('References');
     for(i in citationsSort) {
-        bibliography('Book - Print', '<i>TITLE</i>', i);
+		//AUTHORS, Author multiple sources
+        bibliography('Book - Print', 'LAST, FIRST. <i>TITLE</i>. EDITION CITY: PUBLISHER, DATE. Print.', i);
     }
 }

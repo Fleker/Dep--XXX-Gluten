@@ -83,30 +83,54 @@ function divInsert(type) {
 	type = type.replace(' ', '', 'g');
     if(type == 'Citation') {
         launchCitation();
+		hoverCitationTag();
+		//setTimeout("launchCitation()", 400);
     } else if(type == 'Character') {
         openTab('http://copypastecharacter.com/classic');
 	} else if(type == 'CloseTag') {
 		cursorInsert('</u>&nbsp;');
-    } else {
-		cursorInsert('<u class="'+type.toLowerCase()+'" <!--onmouseover="hoverTag(\''+type.toLowerCase()+'\', \''+type.toLowerCase()+'\');" onmouseout="/*alert(5);*/hideCitationTag()" -->>'+type.toUpperCase()+'</u>&nbsp;');
+    } else if(type == 'LongQuote') {
+		cursorInsert('<u class="longquote" style="margin-left:30px">Within these bounds, you may place a quote that is three lines or longer.</u>')
+	} 	
+	else {
+		var extrapre = '';
+		var extrapost = '';
+		if(type == 'Heading-1') {
+			extrapre = '<br>'; 
+			extrapost = '<br>';
+		} else if(type == 'Longquote') {
+			extrapre = '<br>';
+			extrapost = '<br>';
+		}
+		//<!--onmouseover="hoverTag(\''+type.toLowerCase()+'\', \''+type.toLowerCase()+'\');" onmouseout="/*alert(5);*/hideCitationTag()" -->
+		cursorInsert(extrapre+'<u class="'+type.toLowerCase()+'">'+type.toUpperCase()+'</u>'+extrapost+'&nbsp;');
 		//hoverTag(type, type);
 	}
 }
 
 //citations = new Array();
-function launchCitationTag(index, string) {
+function launchCitationTag(index, string, element) {
 	if(index == null) 
 		index = -1;
 	//console.log('x');
 	$('.hovertag').css('left', window.mouse.onX-75);
 	$('.hovertag').css('top', window.mouse.onY-1);
+	//console.log(window.mouse);
+	if(element != undefined) {
+		//console.log(element);
+		$('.hovertag').css('left', element.offsetLeft-scrollX);
+		$('.hovertag').css('top', element.offsetTop+20-scrollY);
+	}
 	$('.hovertag').css('display', 'block');
+	//console.log("launchCitation("+index+", "+undefined+", "+element+");");
+	
 	try {
-		$('.hovertag').html('<div class="center" onclick="launchCitationx('+index+');">'+citations[index].title+'</div>');	
+		console.log('launchCitationx('+index+', "'+element.id+'");');
+		$('.hovertag').html('<div class="center" onclick="launchCitationx('+index+', \''+element.id+'\');">'+citations[index].title+'</div>');	
 	}
 	catch(e) {
 		if(string == undefined) 
-			$('.hovertag').html('<div class="center" onclick="launchCitationx('+index+');">Edit citation</div>');
+			$('.hovertag').html('<div class="center" onclick="launchCitationx('+index+', \''+element.id+'\');">Edit citation</div>');
 		else
 			$('.hovertag').html('<div class="center">'+string+'</div>');
 	}
@@ -123,7 +147,7 @@ function hoverTag(string, classname) {
 	if(classname != undefined) {
 		$('.'+classname).on('mouseenter', function() {
 			//!--!
-			launchCitationTag(null, string)
+			launchCitationTag(null, string, this)
 		});
 		$('.'+classname).on('mouseleave', function() {
 			hideCitationTag();
@@ -140,7 +164,7 @@ function hoverCitationTag() {
 	}
 	);*/
 	$('.citation').on('mouseenter', function() {
-		launchCitationTag($(this).attr('data-id'));	
+		launchCitationTag($(this).attr('data-id'), undefined, this);	
 		//console.log(); -GET HEIGHT AND WIDTH IN DOC TO INTERACT WITH TAG
 	});
 	y2 = 0;
@@ -156,16 +180,22 @@ function hoverCitationTag() {
 			y2 = 0;
 		}
 	});
+	$('.hovertag').on('mouseleave', function() {
+		hideCitationTag();
+	});
 	console.log($('.citation'));
 }
 //setTimeout("hoverCitationTag()", 1000);
 
 //onmouseover="launchCitationTag('+citations.length+')" onmouseout="hideCitationTag()"
-function launchCitationx(index) {
-	launchCitation(index);
-	setTimeout("launchCitation("+index+");", 500);
+function launchCitationx(index, elid) {
+	console.log('5x'+elid);
+	launchCitation(index, undefined, elid);
+	setTimeout("launchCitation("+index+", "+undefined+", "+elid+");", 500);
 }
-function launchCitation(index, quote) {
+citationIndex = 0;
+function launchCitation(index, quote, elid) {
+	//hoverCitationTag();
 	card('citation', 'Citing a Reference');
 	
     //$('.citation')[0].getAttribute('data-id')
@@ -179,10 +209,18 @@ function launchCitation(index, quote) {
     if(quote == undefined) {
         quote = '';        
     }
+	if(elid != undefined) {
+		console.log('eid: '+elid);
+		try{ eid = $('#'+elid); } 
+		catch(e) { }
+		indexId = eid.attr('id').substr(4);
+	}
     if(index == undefined) {
-        cursorInsert('<u class="citation" data-id="'+citations.length+'" >QUOTE</u>'+quote+'. &nbsp;&nbsp;');
-		index = citations.length;
-		citations.push();
+		citationIndex++;
+		indexId = citationIndex;
+        cursorInsert('<u class="citation" data-id="'+citations.length+'" id="cite'+citationIndex+'">QUOTE</u>'+quote+'. &nbsp;&nbsp;');
+		//index = citations.length;
+		//citations.push();
 		//hoverCitationTag();
     }
         //$('.citation').show();
@@ -210,7 +248,8 @@ function launchCitation(index, quote) {
     citeCard(cardCiteActive);
 	console.log($('.cardBorder'))
     
-    if(citations.length != index) {
+    if(index != undefined && citations[index] != undefined) {
+		console.log(index+' '+citations[index]);
         $('#citeCardType').val(citations[index].type);
         citeBuilder();
     }
@@ -232,7 +271,7 @@ function launchCitation(index, quote) {
         //today = new Date().toJSON().substring(0,10);
         //today = t.toLocaleDateString();
         
-        var title = '<input type="text" placeholder="Title" style="width: 30em" id="citeCardTitle">';
+        var title = '<input type="text" placeholder="Title" list="citetitlelist" style="width: 30em" id="citeCardTitle">';
         var description = '<input type="text" style="width:35em" placeholder="If no official title, please describe" id="citeCardDescription">';
         var bookpub = '<br>&emsp;<input type="text" placeholder="Page" style="width: 4em" id="citeCardPage">&nbsp;<input type="text" placeholder="Volume" style="width: 5em" id="citeCardVolume">&nbsp;<input type="text" placeholder="Edition" style="width: 6em" id="citeCardEdition">&nbsp;<input type="text" placeholder="Series" id="citeCardSeries">Main Title?<input type="checkbox" id="citeCardMain" value="on">';
         var author = '<br>&emsp;Author: <input type="text" placeholder="First" id="citeCardFirst">&nbsp;<input type="text" placeholder="M" style="width: 2em" id="citeCardM">&nbsp;<input type="text" placeholder="Last" id="citeCardLast">';
@@ -278,7 +317,12 @@ function launchCitation(index, quote) {
         
         
         if(index != citations.length) {
+			preload(index);
+		}
+		
+		function preload(index) {
             //preload
+			$('#citeCardType').val(citations[index].type);
             $('#citeCardTitle').val(citations[index].title);
             $('#citeCardPage').val(citations[index].page);
             $('#citeCardVolume').val(citations[index].volume);
@@ -301,45 +345,91 @@ function launchCitation(index, quote) {
             $('#citeCardDUrl').val(citations[index].durl);
             $('#citeCardMedium').val(citations[index].medium);
             //console.log(citations[index]);
+			eid.attr('data-id', index);
         }
-    };
+		function citeCardOK(index) {
+			var abstract = '<br>&emsp;Type a summary of this work.<br><textarea></textarea>';
+
+			if(citationsAbstract)
+				$('.citecard').append(abstract);
+			$('.citecard').append('<br><button onclick="hideCard();citeSubmit('+index+');">Add Citation</button>'); 
+
+
+			cite_title = new Array();
+				var out = '<datalist id="citetitlelist">';
+				for(i in citations) {
+					if(citations[i] != undefined) {
+						cite_title.push(citations[i].title);
+						out = out + '<option value="'+cite_title[cite_title.length-1]+'">'
+					} else if(citations[i].author != undefined) {
+						cite_title.push('Undefined by'+citations[i].author);
+						out = out + '<option value="'+cite_title[cite_title.length-1]+'">';
+					} else {
+						cite_title.push('Undefined') 
+						out = out + '<option value="'+cite_title[cite_title.length-1]+'">';
+					}
+				}
+				
+				out = out + '</datalist>';
+				$('.cardBorder').append(out);
+
+			$('#citeCardTitle').on('input click keyup', function() {
+				//console.log('oninput');
+				console.log(cite_title);
+				if(cite_title.indexOf($('#citeCardTitle').val()) > -1) {
+					console.log('Preload Test: '+cite_title[cite_title.indexOf($('#citeCardTitle').val())]+' vs '+$('#citeCardTitle').val()+' @ #'+cite_title.indexOf($('#citeCardTitle').val()))
+					if(cite_title[cite_title.indexOf($('#citeCardTitle').val())] == $('#citeCardTitle').val()) {
+						console.log('Preloading...');
+						index = cite_title.indexOf($('#citeCardTitle').val());
+						preload(cite_title.indexOf($('#citeCardTitle').val()));
+					}
+				}
+			});
+		}			
+	}
 }
+			function citeSubmit(index) {
+				if(index == undefined) {
+					index = citations.length;
+					citations.push({});
+				}
+				if(cite_title[cite_title.indexOf($('#citeCardTitle').val())] == $('#citeCardTitle').val()) {
+					index = cite_title.indexOf($('#citeCardTitle').val());
+				} else {
+					index = citations.length;
+					citations.push({});	
+				}
+				//lets make sure it is all set.
+				$('#'+indexId).attr('data-id', index);
+				citations[index] = {
+					'type': $('#citeCardType').val(),
+					'title': $('#citeCardTitle').val(),
+					'page': $('#citeCardPage').val(),
+					'volume': $('#citeCardVolume').val(),
+					'edition': $('#citeCardEdition').val(),
+					'series': $('#citeCardSeries').val(),
+					'main': $('#citeCardMain').prop('checked'),
+					'first': $('#citeCardFirst').val(),
+					'm': $('#citeCardM').val(),
+					'last': $('#citeCardLast').val(),
+					'publisher': $('#citeCardPublisher').val(),
+					'city': $('#citeCardCity').val(),
+					'year': $('#citeCardYear').val(),
+					'website': $('#citeCardWebsite').val(),
+					'webpublisher': $('#citeCardWebPublisher').val(),
+					'url': $('#citeCardUrl').val(),
+					'published': $('#citeCardPublished').val(),
+					'database': $('#citeCardDatabase').val(),
+					'durl': $('#citeCardDUrl').val(),
+					'medium': $('#citeCardMedium').val()
+				};
+			}
+	
+//}
 function citeCard(cardCiteActive) {
     if(!cardCiteActive)
         $('.cardBorder').append('<div class="citecard"></div>')    
     cardCiteActive = true;
-}
-function citeCardOK(index) {
-	var abstract = '<br>&emsp;Type a summary of this work.<br><textarea></textarea>';
-		
-	if(citationsAbstract)
-		$('.citecard').append(abstract);
-    $('.citecard').append('<br><button onclick="hideCard();citeSubmit('+index+');">Add Citation</button>');    
-}
-function citeSubmit(index) {
-    citations[index] = {
-        'type': $('#citeCardType').val(),
-        'title': $('#citeCardTitle').val(),
-        'page': $('#citeCardPage').val(),
-        'volume': $('#citeCardVolume').val(),
-        'edition': $('#citeCardEdition').val(),
-        'series': $('#citeCardSeries').val(),
-        'main': $('#citeCardMain').prop('checked'),
-        'first': $('#citeCardFirst').val(),
-        'm': $('#citeCardM').val(),
-        'last': $('#citeCardLast').val(),
-        'publisher': $('#citeCardPublisher').val(),
-        'city': $('#citeCardCity').val(),
-        'year': $('#citeCardYear').val(),
-        'website': $('#citeCardWebsite').val(),
-        'webpublisher': $('#citeCardWebPublisher').val(),
-        'url': $('#citeCardUrl').val(),
-        'published': $('#citeCardPublished').val(),
-        'database': $('#citeCardDatabase').val(),
-        'durl': $('#citeCardDUrl').val(),
-        'medium': $('#citeCardMedium').val()
-	};
-    
 }
 //Tim Down -- http://stackoverflow.com/questions/4767848/get-caret-cursor-position-in-contenteditable-area-containing-html-content
 function getCharacterOffsetWithin(range, node) {
@@ -365,7 +455,14 @@ function getCharacterOffsetWithin(range, node) {
     return charCount;
 }
 var savedRange;
+window.onload = function() {
+	rangy.init();
+}
 function cursorPos() {
+	inspectorobj = rangy.getSelection().inspect();
+	console.log(inspectorobj);
+}
+function cursorPosX() {
     var range = window.getSelection().getRangeAt(0);
     var el = document.getElementsByClassName("input")[0];
     

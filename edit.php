@@ -24,6 +24,8 @@
 	<script type="text/javascript" src="../jspdf/jspdf.plugin.split_text_to_size.js"></script>
 	<script type="text/javascript" src="../jspdf/jspdf.plugin.from_html.js"></script>
 	
+	<script type="text/javascript" src="rangy/rangy-core.js"></script>
+	
         <script src="holoribbon/holoribbon.js"></script>
         
     <!--<script src="formats/mla/format.js"></script>-->

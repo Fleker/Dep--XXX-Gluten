@@ -175,11 +175,14 @@ function format(type, style, positioning) {
 			index = currentPos.indexOf('<u class="citation"');
 			currentPos = currentPos.substr(index);
 			index2 = c.indexOf(currentPos);
-            starttag = currentPos.indexOf('>');
+            starttag = currentPos.indexOf('>')+1;
             endtag = currentPos.indexOf('</u>');
             string = currentPos.substring(starttag+1, endtag);	
 			console.log(type+': i.'+(index)+' '+(index2+starttag)+'-'+(index2+endtag)+' ;'+(endtag+11+index2));
+			console.log(currentPos+' '+starttag+' '+endtag);
 			console.log(c.substr(endtag+11+index2, 16));
+			if(index != -1)
+				CITEATON = currentPos;
 			//index = index + 1;
 			//index++;
 			currentPos = currentPos.substr(1);
@@ -189,13 +192,13 @@ function format(type, style, positioning) {
 
 				console.log(style, index, endtag);
 				if(index > -1 && ((citations[i].main != true && type == 'citation') || (citations[i].main == true && type == 'citation-main') ))
-					$('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+12+index2)+' '+style+' '+$('.previewFullBody').html().substring(endtag+12+index2));
+					$('.previewFullBody').html($('.previewFullBody').html().substring(0,endtag+35+index2)+' '+style+' '+$('.previewFullBody').html().substring(endtag+35+index2));
 				else if(index == -1) {
 					index = c.length + 1;
 					//return;
 				}
 		}
-		console.log($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
+		//console.log($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
 		$('.previewFullBody').html($('.previewFullBody').html().replace(/<u class="citation"[^<]+>/gi, ''));
 		
         /*for(i in citations) {

@@ -48,19 +48,19 @@ function build(obj) {
 	output(obj.content);
         for(i in obj.content) {
             if(obj.content[i].type == 'paragraph') {
-                output('&emsp;'+obj.content[i].value+'<br>');
+                output('<div>&emsp;'+obj.content[i].value+'</div>');
             }
             else {
-                output('<br>'+obj.content[i].value);
+                output(obj.content[i].value);
             }
             
         }
 		//console.log($('.previewFullBody').html());
 		format(/*'TopHeader'*/ 'header', 'RUNNINGHEAD:left PAGE:right');
-		format('longquote', '<p style="margin-left:0.5in">STYLE</p>');
+		format('longquote', '<div style="margin-left:0.5in">STYLE</div>');
         //pagination([1, 1, 1, 1], [8.5, 11])
         format('citation', '(LAST, YEAR, p. PAGE)');
-		format('heading-1', '<br><div class="center"><b>STYLE</b></div><br>', 'center')
+		format('heading-1', '<br><div class="center"><b>STYLE</b></div>', 'center')
         //format('citation-main', '(PAGE)');
         buildPages();
 }

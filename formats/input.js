@@ -356,16 +356,24 @@ function launchCitation(index, quote, elid) {
 
 
 			cite_title = new Array();
+			cite_author = new Array();
+			cite_edition = new Array();
 				var out = '<datalist id="citetitlelist">';
 				for(i in citations) {
 					if(citations[i] != undefined) {
 						cite_title.push(citations[i].title);
+						cite_author.push(citations[i].author);
+						cite_edition.push(citations[i].edition);
 						out = out + '<option value="'+cite_title[cite_title.length-1]+'">'
 					} else if(citations[i].author != undefined) {
 						cite_title.push('Undefined by'+citations[i].author);
+						cite_author.push(citations[i].author);
+						cite_edition.push(citations[i].edition);
 						out = out + '<option value="'+cite_title[cite_title.length-1]+'">';
 					} else {
-						cite_title.push('Undefined') 
+						cite_title.push('Undefined');
+						cite_author.push('');
+						cite_edition(citations[i].edition);
 						out = out + '<option value="'+cite_title[cite_title.length-1]+'">';
 					}
 				}
@@ -373,12 +381,13 @@ function launchCitation(index, quote, elid) {
 				out = out + '</datalist>';
 				$('.cardBorder').append(out);
 
-			$('#citeCardTitle').on('input click keyup', function() {
+			$('#citeCardTitle,#citeCardAuthor,#citeCardEdition').on('input click keyup', function() {
 				//console.log('oninput');
 				console.log(cite_title);
 				if(cite_title.indexOf($('#citeCardTitle').val()) > -1) {
 					console.log('Preload Test: '+cite_title[cite_title.indexOf($('#citeCardTitle').val())]+' vs '+$('#citeCardTitle').val()+' @ #'+cite_title.indexOf($('#citeCardTitle').val()))
 					if(cite_title[cite_title.indexOf($('#citeCardTitle').val())] == $('#citeCardTitle').val()) {
+						//do more for author and edition
 						console.log('Preloading...');
 						index = cite_title.indexOf($('#citeCardTitle').val());
 						preload(cite_title.indexOf($('#citeCardTitle').val()));

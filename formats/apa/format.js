@@ -60,6 +60,7 @@ function build(obj) {
 		format('longquote', '<div style="margin-left:0.5in">STYLE</div>');
         //pagination([1, 1, 1, 1], [8.5, 11])
         format('citation', '(LAST, YEAR, p. PAGE)');
+		format('citation-play', '(RACT.rSCENE.LINE)')
 		format('heading-1', '<br><div class="center"><b>STYLE</b></div>', 'center')
         //format('citation-main', '(PAGE)');
         buildPages();

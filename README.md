@@ -1,7 +1,7 @@
 Gluten
 ======
 # NOTICE
-This repo for Gluten is depreciated. Please go to the other Gluten project on my GitHub account.
+###This repo for Gluten is depreciated. Please go to the other Gluten project on my GitHub account.
 
 What is Project Gluten?
 
